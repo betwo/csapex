@@ -1,0 +1,40 @@
+name: catkin_make_isolated
+
+on: [push]
+
+jobs:
+  build-16-melodic:
+    runs-on: [ubuntu-16.04]
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: ["-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_BUILD_TYPE=Release"]
+        compiler: ["-DCMAKE_C_COMPILER=gcc-7 -DCMAKE_CXX_COMPILER=g++-7"]
+    steps:
+    - uses: actions/checkout@v1
+    - uses: betwo/github-setup-catkin@v1.0.0
+      with:
+        ros-version: 'kinetic'
+    - name: build
+      run: |
+        sudo add-apt-repository ppa:jonathonf/gcc-7.1
+        sudo apt-get update
+        sudo apt-get install -y gcc-7 g++-7
+        catkin_make_isolated ${{ matrix.build_type }} ${{ matrix.compiler }}
+
+  build-18-melodic:
+    runs-on: [ubuntu-18.04]
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: ["-DCMAKE_BUILD_TYPE=Debug", "-DCMAKE_BUILD_TYPE=Release"]
+        compiler: ["-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++", "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++"]
+    steps:
+    - uses: actions/checkout@v1
+    - uses: betwo/github-setup-catkin@v1.0.0
+      with:
+        ros-version: 'melodic'
+    - name: build
+      run: |
+        sudo apt-get -qq install -y gcc clang
+        catkin_make_isolated ${{ matrix.build_type }} ${{ matrix.compiler }}
