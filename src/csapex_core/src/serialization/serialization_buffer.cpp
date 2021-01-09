@@ -76,11 +76,11 @@ void SerializationBuffer::init()
     ++id
 #define ADD_ANY_TYPE_IMPL(...)                                                                                                                                                                         \
     {                                                                                                                                                                                                  \
-        auto serializer = [id](SerializationBuffer& buffer, const std::any& any) {                                                                                                                   \
+        auto serializer = [id](SerializationBuffer& buffer, const std::any& any) {                                                                                                                     \
             buffer << ((uint8_t)id);                                                                                                                                                                   \
-            buffer << (std::any_cast<__VA_ARGS__>(any));                                                                                                                                             \
+            buffer << (std::any_cast<__VA_ARGS__>(any));                                                                                                                                               \
         };                                                                                                                                                                                             \
-        auto deserializer = [](const SerializationBuffer& buffer, std::any& any) {                                                                                                                 \
+        auto deserializer = [](const SerializationBuffer& buffer, std::any& any) {                                                                                                                     \
             __VA_ARGS__ v;                                                                                                                                                                             \
             buffer >> (v);                                                                                                                                                                             \
             any = v;                                                                                                                                                                                   \
@@ -93,12 +93,12 @@ void SerializationBuffer::init()
 
 #define ADD_ANY_TYPE_1(P1, GET_P1, ...)                                                                                                                                                                \
     {                                                                                                                                                                                                  \
-        auto serializer = [id](SerializationBuffer& buffer, const std::any& any) {                                                                                                                   \
+        auto serializer = [id](SerializationBuffer& buffer, const std::any& any) {                                                                                                                     \
             buffer << ((uint8_t)id);                                                                                                                                                                   \
-            buffer << (std::any_cast<__VA_ARGS__>(any)).GET_P1;                                                                                                                                      \
-            buffer << (std::any_cast<__VA_ARGS__>(any));                                                                                                                                             \
+            buffer << (std::any_cast<__VA_ARGS__>(any)).GET_P1;                                                                                                                                        \
+            buffer << (std::any_cast<__VA_ARGS__>(any));                                                                                                                                               \
         };                                                                                                                                                                                             \
-        auto deserializer = [](const SerializationBuffer& buffer, std::any& any) {                                                                                                                 \
+        auto deserializer = [](const SerializationBuffer& buffer, std::any& any) {                                                                                                                     \
             P1 p1;                                                                                                                                                                                     \
             buffer >> (p1);                                                                                                                                                                            \
             __VA_ARGS__ v(p1);                                                                                                                                                                         \
@@ -109,12 +109,12 @@ void SerializationBuffer::init()
 
 #define ADD_ANY_TYPE_1PC(P1, GET_P1, ...)                                                                                                                                                              \
     {                                                                                                                                                                                                  \
-        auto serializer = [id](SerializationBuffer& buffer, const std::any& any) {                                                                                                                   \
+        auto serializer = [id](SerializationBuffer& buffer, const std::any& any) {                                                                                                                     \
             buffer << ((uint8_t)id);                                                                                                                                                                   \
-            buffer << (std::any_cast<std::shared_ptr<__VA_ARGS__ const>>(any))->GET_P1;                                                                                                              \
-            buffer << *(std::any_cast<std::shared_ptr<__VA_ARGS__ const>>(any));                                                                                                                     \
+            buffer << (std::any_cast<std::shared_ptr<__VA_ARGS__ const>>(any))->GET_P1;                                                                                                                \
+            buffer << *(std::any_cast<std::shared_ptr<__VA_ARGS__ const>>(any));                                                                                                                       \
         };                                                                                                                                                                                             \
-        auto deserializer = [](const SerializationBuffer& buffer, std::any& any) {                                                                                                                 \
+        auto deserializer = [](const SerializationBuffer& buffer, std::any& any) {                                                                                                                     \
             P1 p1;                                                                                                                                                                                     \
             buffer >> (p1);                                                                                                                                                                            \
             auto v = std::make_shared<__VA_ARGS__>(p1);                                                                                                                                                \

@@ -104,12 +104,13 @@ public:
     {
         static_assert(IS_COMPLETE(connection_types::GenericPointerMessage<T>), "connection_types::GenericPointerMessage is not included: "
                                                                                "#include <csapex/msg/generic_pointer_message.hpp>");
-        return addSlot(makeEmpty<connection_types::GenericPointerMessage<T>>(), label,
-                       [callback](TokenPtr token) {
-                           auto input_msg = std::dynamic_pointer_cast<connection_types::GenericPointerMessage<T> const>(token->getTokenData());
-                           callback(input_msg->value);
-                       },
-                       active, blocking);
+        return addSlot(
+            makeEmpty<connection_types::GenericPointerMessage<T>>(), label,
+            [callback](TokenPtr token) {
+                auto input_msg = std::dynamic_pointer_cast<connection_types::GenericPointerMessage<T> const>(token->getTokenData());
+                callback(input_msg->value);
+            },
+            active, blocking);
     }
     template <typename T>
     Event* addEvent(const std::string& label, typename std::enable_if<connection_types::should_use_pointer_message<T>::value>::type* = 0)
@@ -146,12 +147,13 @@ public:
     {
         static_assert(IS_COMPLETE(connection_types::GenericValueMessage<T>), "connection_types::GenericValueMessage is not included: "
                                                                              "#include <csapex/msg/generic_value_message.hpp>");
-        return addSlot(makeEmpty<connection_types::GenericValueMessage<T>>(), label,
-                       [callback](TokenPtr token) {
-                           auto input_msg = std::dynamic_pointer_cast<connection_types::GenericValueMessage<T> const>(token->getTokenData());
-                           callback(input_msg->value);
-                       },
-                       active, blocking);
+        return addSlot(
+            makeEmpty<connection_types::GenericValueMessage<T>>(), label,
+            [callback](TokenPtr token) {
+                auto input_msg = std::dynamic_pointer_cast<connection_types::GenericValueMessage<T> const>(token->getTokenData());
+                callback(input_msg->value);
+            },
+            active, blocking);
     }
     template <typename T, typename Instance, typename R = void>
     Slot* addSlot(const std::string& label, Instance* instance, R (Instance::*member_fn)(const T), bool active = false, bool blocking = true,
@@ -159,12 +161,13 @@ public:
     {
         static_assert(IS_COMPLETE(connection_types::GenericValueMessage<T>), "connection_types::GenericValueMessage is not included: "
                                                                              "#include <csapex/msg/generic_value_message.hpp>");
-        return addSlot(makeEmpty<connection_types::GenericValueMessage<T>>(), label,
-                       [instance, member_fn](TokenPtr token) {
-                           auto input_msg = std::dynamic_pointer_cast<connection_types::GenericValueMessage<T> const>(token->getTokenData());
-                           (instance->*member_fn)(input_msg->value);
-                       },
-                       active, blocking);
+        return addSlot(
+            makeEmpty<connection_types::GenericValueMessage<T>>(), label,
+            [instance, member_fn](TokenPtr token) {
+                auto input_msg = std::dynamic_pointer_cast<connection_types::GenericValueMessage<T> const>(token->getTokenData());
+                (instance->*member_fn)(input_msg->value);
+            },
+            active, blocking);
     }
     template <typename T>
     Event* addEvent(const std::string& label, typename std::enable_if<connection_types::should_use_value_message<T>::value>::type* = 0)
@@ -244,12 +247,12 @@ public:
     /**
      * Raw construction, handle with care!
      */
-    virtual Input* addInput(TokenDataConstPtr type, const std::string& label, bool optional) = 0;
-    virtual Output* addOutput(TokenDataConstPtr type, const std::string& label) = 0;
-    virtual Slot* addSlot(TokenDataConstPtr type, const std::string& label, std::function<void(Slot*, const TokenPtr&)> callback, bool active, bool blocking) = 0;
-    virtual Slot* addSlot(TokenDataConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active, bool blocking) = 0;
-    virtual Slot* addSlot(TokenDataConstPtr type, const std::string& label, std::function<void()> callback, bool active, bool blocking) = 0;
-    virtual Event* addEvent(TokenDataConstPtr type, const std::string& label) = 0;
+    virtual Input* addInput(TokenTypeConstPtr type, const std::string& label, bool optional) = 0;
+    virtual Output* addOutput(TokenTypeConstPtr type, const std::string& label) = 0;
+    virtual Slot* addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(Slot*, const TokenPtr&)> callback, bool active, bool blocking) = 0;
+    virtual Slot* addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active, bool blocking) = 0;
+    virtual Slot* addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void()> callback, bool active, bool blocking) = 0;
+    virtual Event* addEvent(TokenTypeConstPtr type, const std::string& label) = 0;
 
 protected:
     virtual std::vector<ConnectablePtr> getExternalConnectors() const = 0;

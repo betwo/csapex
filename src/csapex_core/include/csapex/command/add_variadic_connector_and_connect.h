@@ -16,7 +16,7 @@ class CSAPEX_COMMAND_EXPORT AddVariadicConnectorAndConnect : public AddVariadicC
     COMMAND_HEADER(AddVariadicConnectorAndConnect);
 
 public:
-    AddVariadicConnectorAndConnect(const AUUID& graph_id, const AUUID& node, const ConnectorType& connector_type, const TokenDataConstPtr& type, const std::string& label, const UUID& target,
+    AddVariadicConnectorAndConnect(const AUUID& graph_id, const AUUID& node, const ConnectorType& connector_type, const TokenTypeConstPtr& type, const std::string& label, const UUID& target,
                                    bool move, bool external);
 
     void serialize(SerializationBuffer& data, SemanticVersion& version) const override;

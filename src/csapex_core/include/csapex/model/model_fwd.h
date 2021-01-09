@@ -49,6 +49,7 @@ FWD(SubgraphNode)
 FWD(Tag)
 FWD(Token)
 FWD(TokenData)
+FWD(TokenType)
 
 }  // namespace csapex
 

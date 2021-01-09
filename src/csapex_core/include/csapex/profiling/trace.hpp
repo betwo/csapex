@@ -14,7 +14,7 @@
 
 #define TRACE(name) csapex::Trace::Ptr MAKE_UNIQUE(__TRACE__) = profiling_timer_->isEnabled() ? profiling_timer_->step(name) : csapex::Trace::Ptr(nullptr)
 
-#define TRACE_STREAM(stream)                                                                                                                                                                       \
+#define TRACE_STREAM(stream)                                                                                                                                                                           \
     std::stringstream MAKE_UNIQUE(__ss__);                                                                                                                                                             \
     MAKE_UNIQUE(__ss__) << stream;                                                                                                                                                                     \
     csapex::Trace::Ptr MAKE_UNIQUE(__TRACE__) = profiling_timer_->isEnabled() ? profiling_timer_->step(MAKE_UNIQUE(__ss__).str()) : csapex::Trace::Ptr(nullptr)

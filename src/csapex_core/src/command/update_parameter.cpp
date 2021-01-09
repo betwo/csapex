@@ -99,6 +99,6 @@ void UpdateParameter::deserialize(const SerializationBuffer& data, const Semanti
 
     data >> uuid;
     data >> parameter_;
-    
+
     apex_assert_hard(!uuid.empty());
 }

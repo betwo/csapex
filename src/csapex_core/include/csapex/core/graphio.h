@@ -38,7 +38,7 @@ public:
 
     Snippet saveSelectedGraph(const std::vector<UUID>& nodes);
 
-    std::unordered_map<UUID, UUID, UUID::Hasher> loadIntoGraph(const Snippet& blueprint, const csapex::Point& position, SemanticVersion version={});
+    std::unordered_map<UUID, UUID, UUID::Hasher> loadIntoGraph(const Snippet& blueprint, const csapex::Point& position, SemanticVersion version = {});
 
 public:
     csapex::slim_signal::Signal<void(const GraphFacade&, YAML::Node& e)> saveViewRequest;

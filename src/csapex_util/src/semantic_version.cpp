@@ -14,16 +14,16 @@ SemanticVersion::SemanticVersion(const std::string& version_str)
     std::vector<int> versions;
     auto start_pos = 0;
     auto end_pos = version_str.size();
-    while(start_pos < end_pos) {
+    while (start_pos < end_pos) {
         auto it = version_str.find(delimiter, start_pos);
-        if(it > end_pos) {
+        if (it > end_pos) {
             it = end_pos;
         }
-        std::string token = version_str.substr(start_pos, it-start_pos);
+        std::string token = version_str.substr(start_pos, it - start_pos);
         versions.push_back(std::atoi(token.c_str()));
-        start_pos = it+1;
+        start_pos = it + 1;
     }
-    while(versions.size() < 3) {
+    while (versions.size() < 3) {
         versions.push_back(0);
     }
     major_v = versions[0];

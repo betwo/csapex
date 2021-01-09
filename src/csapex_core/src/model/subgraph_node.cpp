@@ -165,17 +165,18 @@ void SubgraphNode::setupParameters(Parameterizable& params)
 
     iterated_inputs_param_ = std::dynamic_pointer_cast<param::BitSetParameter>(param::factory::declareParameterBitSet("iterated_containers", flags).build());
 
-    params.addConditionalParameter(iterated_inputs_param_, [this]() { return readParameter<bool>("iterate_containers"); },
-                                   [this](param::Parameter* p) {
-                                       for (auto& pair : relay_to_external_input_) {
-                                           UUID id = pair.second;
-                                           InputPtr i = node_handle_->getInput(id);
-                                           apex_assert_hard(i);
+    params.addConditionalParameter(
+        iterated_inputs_param_, [this]() { return readParameter<bool>("iterate_containers"); },
+        [this](param::Parameter* p) {
+            for (auto& pair : relay_to_external_input_) {
+                UUID id = pair.second;
+                InputPtr i = node_handle_->getInput(id);
+                apex_assert_hard(i);
 
-                                           bool iterate = iterated_inputs_param_->isSet(id.getFullName());
-                                           setIterationEnabled(id, iterate);
-                                       }
-                                   });
+                bool iterate = iterated_inputs_param_->isSet(id.getFullName());
+                setIterationEnabled(id, iterate);
+            }
+        });
 }
 
 void SubgraphNode::process(NodeModifier& node_modifier, Parameterizable& params, Continuation continuation)
@@ -247,13 +248,13 @@ void crossConnectLabelChange(Connectable* a, Connectable* b)
 }
 }  // namespace
 
-Input* SubgraphNode::createVariadicInput(TokenDataConstPtr type, const std::string& label, bool optional)
+Input* SubgraphNode::createVariadicInput(TokenTypeConstPtr type, const std::string& label, bool optional)
 {
     auto pair = addForwardingInput(type, label, optional);
     return node_handle_->getInput(pair.external).get();
 }
 
-InputPtr SubgraphNode::createInternalInput(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label, bool optional)
+InputPtr SubgraphNode::createInternalInput(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, bool optional)
 {
     InputPtr input = node_handle_->addInternalInput(type, internal_uuid, label, optional);
     input->setGraphPort(true);
@@ -277,7 +278,7 @@ void SubgraphNode::removeVariadicInput(InputPtr input)
     transition_relay_out_->removeOutput(relay);
 }
 
-RelayMapping SubgraphNode::addForwardingInput(const TokenDataConstPtr& type, const std::string& label, bool optional)
+RelayMapping SubgraphNode::addForwardingInput(const TokenTypeConstPtr& type, const std::string& label, bool optional)
 {
     UUID internal_uuid = graph_->generateDerivedUUID(UUID(), "relayout");
     UUID external_uuid = addForwardingInput(internal_uuid, type, label, optional);
@@ -285,7 +286,7 @@ RelayMapping SubgraphNode::addForwardingInput(const TokenDataConstPtr& type, con
     return { external_uuid, internal_uuid };
 }
 
-UUID SubgraphNode::addForwardingInput(const UUID& internal_uuid, const TokenDataConstPtr& type, const std::string& label, bool optional)
+UUID SubgraphNode::addForwardingInput(const UUID& internal_uuid, const TokenTypeConstPtr& type, const std::string& label, bool optional)
 {
     graph_->registerUUID(internal_uuid);
 
@@ -312,13 +313,13 @@ UUID SubgraphNode::addForwardingInput(const UUID& internal_uuid, const TokenData
     return external_input->getUUID();
 }
 
-Output* SubgraphNode::createVariadicOutput(TokenDataConstPtr type, const std::string& label)
+Output* SubgraphNode::createVariadicOutput(TokenTypeConstPtr type, const std::string& label)
 {
     auto pair = addForwardingOutput(type, label);
     return node_handle_->getOutput(pair.external).get();
 }
 
-OutputPtr SubgraphNode::createInternalOutput(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label)
+OutputPtr SubgraphNode::createInternalOutput(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label)
 {
     OutputPtr output = node_handle_->addInternalOutput(type, internal_uuid, label);
     output->setGraphPort(true);
@@ -344,7 +345,7 @@ void SubgraphNode::removeVariadicOutput(OutputPtr output)
     transition_relay_in_->removeInput(relay);
 }
 
-RelayMapping SubgraphNode::addForwardingOutput(const TokenDataConstPtr& type, const std::string& label)
+RelayMapping SubgraphNode::addForwardingOutput(const TokenTypeConstPtr& type, const std::string& label)
 {
     UUID internal_uuid = graph_->generateDerivedUUID(UUID(), "relayin");
     UUID external_uuid = addForwardingOutput(internal_uuid, type, label);
@@ -352,7 +353,7 @@ RelayMapping SubgraphNode::addForwardingOutput(const TokenDataConstPtr& type, co
     return { external_uuid, internal_uuid };
 }
 
-UUID SubgraphNode::addForwardingOutput(const UUID& internal_uuid, const TokenDataConstPtr& type, const std::string& label)
+UUID SubgraphNode::addForwardingOutput(const UUID& internal_uuid, const TokenTypeConstPtr& type, const std::string& label)
 {
     graph_->registerUUID(internal_uuid);
 
@@ -395,7 +396,7 @@ UUID SubgraphNode::addForwardingOutput(const UUID& internal_uuid, const TokenDat
     return external_output->getUUID();
 }
 
-SlotPtr SubgraphNode::createInternalSlot(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback)
+SlotPtr SubgraphNode::createInternalSlot(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback)
 {
     SlotPtr slot = node_handle_->addInternalSlot(makeEmpty<connection_types::AnyMessage>(), internal_uuid, label, callback);
     slot->setGraphPort(true);
@@ -407,7 +408,7 @@ SlotPtr SubgraphNode::createInternalSlot(const TokenDataConstPtr& type, const UU
     return slot;
 }
 
-Slot* SubgraphNode::createVariadicSlot(TokenDataConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> /*callback*/, bool /*active*/, bool /*blocking*/)
+Slot* SubgraphNode::createVariadicSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> /*callback*/, bool /*active*/, bool /*blocking*/)
 {
     auto pair = addForwardingSlot(type, label);
     return node_handle_->getSlot(pair.external).get();
@@ -432,7 +433,7 @@ void SubgraphNode::removeVariadicSlot(SlotPtr slot)
     relay_to_external_slot_.erase(relay->getUUID());
 }
 
-RelayMapping SubgraphNode::addForwardingSlot(const TokenDataConstPtr& type, const std::string& label)
+RelayMapping SubgraphNode::addForwardingSlot(const TokenTypeConstPtr& type, const std::string& label)
 {
     UUID internal_uuid = graph_->generateDerivedUUID(UUID(), "relayevent");
     UUID external_uuid = addForwardingSlot(internal_uuid, type, label);
@@ -440,7 +441,7 @@ RelayMapping SubgraphNode::addForwardingSlot(const TokenDataConstPtr& type, cons
     return { external_uuid, internal_uuid };
 }
 
-UUID SubgraphNode::addForwardingSlot(const UUID& internal_uuid, const TokenDataConstPtr& type, const std::string& label)
+UUID SubgraphNode::addForwardingSlot(const UUID& internal_uuid, const TokenTypeConstPtr& type, const std::string& label)
 {
     graph_->registerUUID(internal_uuid);
 
@@ -466,7 +467,7 @@ UUID SubgraphNode::addForwardingSlot(const UUID& internal_uuid, const TokenDataC
     return external_slot->getUUID();
 }
 
-EventPtr SubgraphNode::createInternalEvent(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label)
+EventPtr SubgraphNode::createInternalEvent(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label)
 {
     EventPtr event = node_handle_->addInternalEvent(type, internal_uuid, label);
     event->setGraphPort(true);
@@ -483,7 +484,7 @@ EventPtr SubgraphNode::createInternalEvent(const TokenDataConstPtr& type, const 
     return event;
 }
 
-Event* SubgraphNode::createVariadicEvent(TokenDataConstPtr type, const std::string& label)
+Event* SubgraphNode::createVariadicEvent(TokenTypeConstPtr type, const std::string& label)
 {
     auto pair = addForwardingEvent(type, label);
     return node_handle_->getEvent(pair.external).get();
@@ -508,7 +509,7 @@ void SubgraphNode::removeVariadicEvent(EventPtr event)
     relay_to_external_event_.erase(relay->getUUID());
 }
 
-RelayMapping SubgraphNode::addForwardingEvent(const TokenDataConstPtr& type, const std::string& label)
+RelayMapping SubgraphNode::addForwardingEvent(const TokenTypeConstPtr& type, const std::string& label)
 {
     UUID internal_uuid = graph_->generateDerivedUUID(UUID(), "relayslot");
     UUID external_uuid = addForwardingEvent(internal_uuid, type, label);
@@ -516,7 +517,7 @@ RelayMapping SubgraphNode::addForwardingEvent(const TokenDataConstPtr& type, con
     return { external_uuid, internal_uuid };
 }
 
-UUID SubgraphNode::addForwardingEvent(const UUID& internal_uuid, const TokenDataConstPtr& type, const std::string& label)
+UUID SubgraphNode::addForwardingEvent(const UUID& internal_uuid, const TokenTypeConstPtr& type, const std::string& label)
 {
     graph_->registerUUID(internal_uuid);
 
@@ -661,7 +662,7 @@ void SubgraphNode::setIterationEnabled(const UUID& external_input_uuid, bool ena
         OutputPtr o = external_to_internal_outputs_.at(i->getUUID());
 
         // change the output type of the subgraph
-        TokenDataConstPtr vector_type = i->getType();
+        TokenTypeConstPtr vector_type = i->getType();
         if (vector_type->isContainer()) {
             o->setType(vector_type->nestedType());
         }
@@ -670,7 +671,7 @@ void SubgraphNode::setIterationEnabled(const UUID& external_input_uuid, bool ena
         for (const UUID& id : transition_relay_in_->getInputs()) {
             InputPtr i = transition_relay_in_->getInput(id);
 
-            TokenDataConstPtr type = i->getType();
+            TokenTypeConstPtr type = i->getType();
 
             original_types_[id] = type;
 

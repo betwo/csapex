@@ -601,7 +601,7 @@ void DesignerScene::mouseMoveEvent(QGraphicsSceneMouseEvent* e)
 
                 descr += ", seq: " + QString::number(c.seq);
 
-                TokenDataConstPtr m = c.type;
+                TokenTypeConstPtr m = c.type;
                 if (m) {
                     descr += ", Message: ";
                     descr += QString::fromStdString(m->descriptiveName());
@@ -861,7 +861,7 @@ void DesignerScene::drawConnection(QPainter* painter, const ConnectionDescriptio
 
     ccs = CurrentConnectionState();
 
-    if(std::dynamic_pointer_cast<const connection_types::NoMessage>(ci.type)) {
+    if (std::dynamic_pointer_cast<const connection_types::NoMessage>(ci.type)) {
         ccs.marker_token = true;
     } else {
         ccs.marker_token = false;
@@ -1121,7 +1121,7 @@ std::vector<QRectF> DesignerScene::drawConnection(QPainter* painter, const QPoin
         color_start = view_core_.getStyle().lineColorMarker();
         color_end = view_core_.getStyle().lineColorMarker();
     }
-    
+
     if (ccs.selected_from) {
         color_start.setAlpha(255);
     } else {

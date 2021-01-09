@@ -24,8 +24,8 @@ public:
 public:
     MultiTokenData(const std::vector<TokenData::Ptr>& types);
 
-    bool canConnectTo(const TokenData* other_side) const override;
-    bool acceptsConnectionFrom(const TokenData* other_side) const override;
+    bool canConnectTo(const TokenType* other_side) const override;
+    bool acceptsConnectionFrom(const TokenType* other_side) const override;
 
 public:
     void serialize(SerializationBuffer& data, SemanticVersion& version) const override;

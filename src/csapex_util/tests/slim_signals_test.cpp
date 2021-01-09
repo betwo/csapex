@@ -77,6 +77,7 @@ public:
 
 TEST_F(SlimSignalsTest, Constructor)
 {
+    const auto cmpp = getenv("CMAKE_PREFIX_PATH");
     boost::signals2::signal<void(int, Base*)> boost_sig;
     slim_signal::Signal<void(int, Base*)> slim_sig;
 

@@ -13,12 +13,12 @@ AnyMessage::AnyMessage() : Message(type<AnyMessage>::name(), "/", 0)
 {
 }
 
-bool AnyMessage::canConnectTo(const TokenData*) const
+bool AnyMessage::canConnectTo(const TokenType*) const
 {
     return true;
 }
 
-bool AnyMessage::acceptsConnectionFrom(const TokenData*) const
+bool AnyMessage::acceptsConnectionFrom(const TokenType*) const
 {
     return true;
 }

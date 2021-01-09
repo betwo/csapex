@@ -63,25 +63,25 @@ public:
 
     bool isAsynchronous() const override;
 
-    InputPtr createInternalInput(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label, bool optional);
-    OutputPtr createInternalOutput(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label);
-    EventPtr createInternalEvent(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label);
-    SlotPtr createInternalSlot(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback);
+    InputPtr createInternalInput(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, bool optional);
+    OutputPtr createInternalOutput(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label);
+    EventPtr createInternalEvent(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label);
+    SlotPtr createInternalSlot(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback);
 
-    Input* createVariadicInput(TokenDataConstPtr type, const std::string& label, bool optional) override;
-    Output* createVariadicOutput(TokenDataConstPtr type, const std::string& label) override;
-    Event* createVariadicEvent(TokenDataConstPtr type, const std::string& label) override;
-    Slot* createVariadicSlot(TokenDataConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active, bool blocking) override;
+    Input* createVariadicInput(TokenTypeConstPtr type, const std::string& label, bool optional) override;
+    Output* createVariadicOutput(TokenTypeConstPtr type, const std::string& label) override;
+    Event* createVariadicEvent(TokenTypeConstPtr type, const std::string& label) override;
+    Slot* createVariadicSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active, bool blocking) override;
 
     void removeVariadicInput(InputPtr input) override;
     void removeVariadicOutput(OutputPtr input) override;
     void removeVariadicEvent(EventPtr input) override;
     void removeVariadicSlot(SlotPtr input) override;
 
-    RelayMapping addForwardingInput(const TokenDataConstPtr& type, const std::string& label, bool optional);
-    RelayMapping addForwardingOutput(const TokenDataConstPtr& type, const std::string& label);
-    RelayMapping addForwardingSlot(const TokenDataConstPtr& type, const std::string& label);
-    RelayMapping addForwardingEvent(const TokenDataConstPtr& type, const std::string& label);
+    RelayMapping addForwardingInput(const TokenTypeConstPtr& type, const std::string& label, bool optional);
+    RelayMapping addForwardingOutput(const TokenTypeConstPtr& type, const std::string& label);
+    RelayMapping addForwardingSlot(const TokenTypeConstPtr& type, const std::string& label);
+    RelayMapping addForwardingEvent(const TokenTypeConstPtr& type, const std::string& label);
 
     InputPtr getForwardedInputInternal(const UUID& internal_uuid) const;
     OutputPtr getForwardedOutputInternal(const UUID& internal_uuid) const;
@@ -117,10 +117,10 @@ public:
     bool isIterating() const;
 
 private:
-    UUID addForwardingInput(const UUID& internal_uuid, const TokenDataConstPtr& type, const std::string& label, bool optional);
-    UUID addForwardingOutput(const UUID& internal_uuid, const TokenDataConstPtr& type, const std::string& label);
-    UUID addForwardingSlot(const UUID& internal_uuid, const TokenDataConstPtr& type, const std::string& label);
-    UUID addForwardingEvent(const UUID& internal_uuid, const TokenDataConstPtr& type, const std::string& label);
+    UUID addForwardingInput(const UUID& internal_uuid, const TokenTypeConstPtr& type, const std::string& label, bool optional);
+    UUID addForwardingOutput(const UUID& internal_uuid, const TokenTypeConstPtr& type, const std::string& label);
+    UUID addForwardingSlot(const UUID& internal_uuid, const TokenTypeConstPtr& type, const std::string& label);
+    UUID addForwardingEvent(const UUID& internal_uuid, const TokenTypeConstPtr& type, const std::string& label);
 
     void currentIterationIsProcessed();
     void subgraphHasProducedAllMessages();
@@ -162,7 +162,7 @@ protected:
     std::unordered_map<UUID, UUID, UUID::Hasher> relay_to_external_slot_;
     std::unordered_map<UUID, UUID, UUID::Hasher> relay_to_external_event_;
 
-    std::unordered_map<UUID, TokenDataConstPtr, UUID::Hasher> original_types_;
+    std::unordered_map<UUID, TokenTypeConstPtr, UUID::Hasher> original_types_;
 
     std::set<UUID> iterated_inputs_;
     param::BitSetParameterPtr iterated_inputs_param_;

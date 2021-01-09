@@ -167,7 +167,7 @@ void Connectable::setLabel(const std::string& label)
     }
 }
 
-void Connectable::setType(TokenData::ConstPtr type)
+void Connectable::setType(TokenType::ConstPtr type)
 {
     std::unique_lock<std::recursive_mutex> lock(sync_mutex);
     bool compatible = type_ && type && type_->canConnectTo(type.get()) && type->canConnectTo(type_.get());
@@ -183,7 +183,7 @@ void Connectable::setType(TokenData::ConstPtr type)
     }
 }
 
-TokenData::ConstPtr Connectable::getType() const
+TokenType::ConstPtr Connectable::getType() const
 {
     return type_;
 }

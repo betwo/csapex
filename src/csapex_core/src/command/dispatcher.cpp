@@ -66,7 +66,6 @@ bool CommandDispatcher::doExecute(Command::Ptr command)
     bool success = Command::Access::executeCommand(command);
 
     if (success) {
-
         if (command->isUndoable()) {
             done.push_back(command);
 

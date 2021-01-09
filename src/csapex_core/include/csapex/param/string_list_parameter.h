@@ -6,7 +6,6 @@
 #include <csapex_core/csapex_param_export.h>
 #include <csapex/utility/any.h>
 
-
 namespace csapex
 {
 namespace param

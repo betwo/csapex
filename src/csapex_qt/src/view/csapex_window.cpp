@@ -1081,7 +1081,7 @@ void CsApexWindow::startStopServer()
 void CsApexWindow::updateServerStateLabel()
 {
     apex_assert_hard(!view_core_.isProxy());
-    
+
     CsApexViewCoreImplementation& local_view_core = dynamic_cast<CsApexViewCoreImplementation&>(view_core_);
     CsApexCore& core = *local_view_core.getCore();
     bool running = core.isServerActive();

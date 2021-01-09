@@ -20,7 +20,6 @@ void EndOfProgramMessage::deserialize(const SerializationBuffer& data, const Sem
 {
 }
 
-
 /// YAML
 namespace YAML
 {

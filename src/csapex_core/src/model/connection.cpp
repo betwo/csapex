@@ -161,7 +161,7 @@ void Connection::setTokenProcessed()
 void Connection::setToken(const TokenPtr& token, const bool silent)
 {
     {
-        TokenPtr msg = token->cloneAs<Token>();
+        TokenPtr msg = token;  //->cloneAs<Token>();
 
         std::unique_lock<std::recursive_mutex> lock(sync);
         apex_assert_hard(msg != nullptr);
@@ -177,7 +177,7 @@ void Connection::setToken(const TokenPtr& token, const bool silent)
         setState(State::UNREAD);
     }
 
-    if(!silent) {
+    if (!silent) {
         notifyMessageSet();
     }
 }
@@ -311,7 +311,7 @@ int Connection::id() const
 
 ConnectionDescription Connection::getDescription() const
 {
-    TokenDataConstPtr type = message_ ? message_->getTokenData() : makeEmpty<connection_types::AnyMessage>();
+    TokenTypeConstPtr type = message_ ? message_->getTokenData() : makeEmpty<connection_types::AnyMessage>();
     return ConnectionDescription(from_->getUUID(), to_->getUUID(), type, id_, seq_, isActive(), getFulcrumsCopy());
 }
 

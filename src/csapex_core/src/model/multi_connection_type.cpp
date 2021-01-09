@@ -37,7 +37,7 @@ MultiTokenData::MultiTokenData(const std::vector<TokenData::Ptr>& types) : Token
 {
 }
 
-bool MultiTokenData::canConnectTo(const TokenData* other_side) const
+bool MultiTokenData::canConnectTo(const TokenType* other_side) const
 {
     for (std::vector<TokenData::Ptr>::const_iterator it = types_.begin(); it != types_.end(); ++it) {
         if ((*it)->canConnectTo(other_side)) {
@@ -48,7 +48,7 @@ bool MultiTokenData::canConnectTo(const TokenData* other_side) const
     return false;
 }
 
-bool MultiTokenData::acceptsConnectionFrom(const TokenData* other_side) const
+bool MultiTokenData::acceptsConnectionFrom(const TokenType* other_side) const
 {
     for (std::vector<TokenData::Ptr>::const_iterator it = types_.begin(); it != types_.end(); ++it) {
         if ((*it)->acceptsConnectionFrom(other_side)) {

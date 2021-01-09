@@ -8,12 +8,12 @@ MarkerMessage::MarkerMessage(const std::string& name, Stamp stamp) : Message(nam
 {
 }
 
-bool MarkerMessage::canConnectTo(const TokenData*) const
+bool MarkerMessage::canConnectTo(const TokenType*) const
 {
     return true;
 }
 
-bool MarkerMessage::acceptsConnectionFrom(const TokenData*) const
+bool MarkerMessage::acceptsConnectionFrom(const TokenType*) const
 {
     return true;
 }

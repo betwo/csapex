@@ -44,7 +44,6 @@ void MetaPort::createToolTip()
     setToolTip(QString::fromStdString(message));
 }
 
-
 void MetaPort::triggerCreatePort()
 {
     bool ok = false;

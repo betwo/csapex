@@ -75,22 +75,22 @@ void Output::notifyMessageProcessed()
 
 void Output::notifyMessageProcessed(Connection* connection)
 {
-//     std::cerr << getUUID() << " :::: " << *connection << "-> sent notifyProcessed " << std::endl;
-//     for (auto connection : connections_) {
-//         std::string s;
-//         switch (connection->getState()) {
-//             case Connection::State::DONE:
-//                 s = "DONE / NOT_INITIALIZED";
-//                 break;
-//             case Connection::State::UNREAD:
-//                 s = "UNREAD";
-//                 break;
-//             case Connection::State::READ:
-//                 s = "READ";
-//                 break;
-//         }
-//         std::cerr << getUUID() << " :::: " << *connection << "-> state: " << s << std::endl;
-//     }
+    //     std::cerr << getUUID() << " :::: " << *connection << "-> sent notifyProcessed " << std::endl;
+    //     for (auto connection : connections_) {
+    //         std::string s;
+    //         switch (connection->getState()) {
+    //             case Connection::State::DONE:
+    //                 s = "DONE / NOT_INITIALIZED";
+    //                 break;
+    //             case Connection::State::UNREAD:
+    //                 s = "UNREAD";
+    //                 break;
+    //             case Connection::State::READ:
+    //                 s = "READ";
+    //                 break;
+    //         }
+    //         std::cerr << getUUID() << " :::: " << *connection << "-> state: " << s << std::endl;
+    //     }
 
     for (auto connection : connections_) {
         if (connection->getState() != Connection::State::DONE) {
@@ -217,8 +217,8 @@ void Output::publish()
             // std::cerr << getUUID() << " :::: " << *connection << "-> set token to: " << msg->getTokenData()->descriptiveName() << std::endl;
             connection->setToken(msg, true);
             sent = true;
-        // } else {
-        //     std::cerr << getUUID() << " :::: " << *connection << "-> set no token, connection is not enabled" << std::endl;
+            // } else {
+            //     std::cerr << getUUID() << " :::: " << *connection << "-> set no token, connection is not enabled" << std::endl;
         }
     }
 

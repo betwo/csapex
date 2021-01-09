@@ -491,7 +491,7 @@ public:
 
 private:
     void doSetParameterLater(const std::string& name, const param::ParameterConstPtr& value);
-    
+
 private:
     void parameterChanged(param::ParameterPtr param);
     void parameterEnabled(param::Parameter* param, bool enabled);

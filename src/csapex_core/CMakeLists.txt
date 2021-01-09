@@ -332,6 +332,7 @@ add_library(${PROJECT_NAME} SHARED
     src/model/connection_description.cpp
     src/model/token.cpp
     src/model/token_data.cpp
+    src/model/token_type.cpp
     src/model/error_state.cpp
     src/model/fulcrum.cpp
     src/model/generic_state.cpp

@@ -80,34 +80,35 @@ void NodeRunner::connectNodeWorker()
     NodeRunnerWeakPtr this_weak = std::dynamic_pointer_cast<NodeRunner>(shared_from_this());
     apex_assert_hard(this_weak.lock() != nullptr);
 
-    check_parameters_ = std::make_shared<Task>(std::string("check parameters for ") + nh_->getUUID().getFullName(),
-                                               [this_weak]() {
-                                                   if (auto self = this_weak.lock()) {
-                                                       self->checkParameters();
-                                                   }
-                                               },
-                                               0, this);
-    execute_ = std::make_shared<Task>(std::string("process ") + nh_->getUUID().getFullName(),
-                                      [this_weak]() {
-                                          if (auto self = this_weak.lock()) {
-                                              self->execute();
-                                          }
-                                      },
-                                      0, this);
+    check_parameters_ = std::make_shared<Task>(
+        std::string("check parameters for ") + nh_->getUUID().getFullName(),
+        [this_weak]() {
+            if (auto self = this_weak.lock()) {
+                self->checkParameters();
+            }
+        },
+        0, this);
+    execute_ = std::make_shared<Task>(
+        std::string("process ") + nh_->getUUID().getFullName(),
+        [this_weak]() {
+            if (auto self = this_weak.lock()) {
+                self->execute();
+            }
+        },
+        0, this);
 
-    notify_processed_ = std::make_shared<Task>(std::string("notify ") + nh_->getUUID().getFullName(),
-                                      [this_weak]() {
-                                          if (auto self = this_weak.lock()) {
-                                              self->notify();
-                                          }
-                                      },
-                                      0, this);
+    notify_processed_ = std::make_shared<Task>(
+        std::string("notify ") + nh_->getUUID().getFullName(),
+        [this_weak]() {
+            if (auto self = this_weak.lock()) {
+                self->notify();
+            }
+        },
+        0, this);
 
     observe(worker_->try_process_changed, [this]() { scheduleProcess(); });
 
-    observe(worker_->outgoing_messages_processed, [this]() {
-        schedule(notify_processed_);
-    });
+    observe(worker_->outgoing_messages_processed, [this]() { schedule(notify_processed_); });
 
     observe(worker_->messages_processed, [this]() {
         measureFrequency();
@@ -176,7 +177,7 @@ void NodeRunner::scheduleProcess()
             // execute_->setPriority(std::max<long>(0, worker_->getSequenceNumber()));
             // if(worker_->canExecute()) {
             if (!waiting_for_execution_) {
-                if(!execute_->isScheduled()) {
+                if (!execute_->isScheduled()) {
                     schedule(execute_);
                 }
             }
@@ -258,7 +259,7 @@ void NodeRunner::execute()
             }
         }
     } else {
-        //can_step_++;
+        // can_step_++;
         waiting_for_execution_ = false;
     }
 }

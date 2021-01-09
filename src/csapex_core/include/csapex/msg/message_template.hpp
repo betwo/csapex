@@ -65,7 +65,7 @@ struct MessageTemplateContainer : public Type
         return *this;
     }
 
-    static bool acceptsConnectionFrom(const TokenData* other_side)
+    static bool acceptsConnectionFrom(const TokenType* other_side)
     {
         return dynamic_cast<const Type*>(other_side);
     }
@@ -90,7 +90,7 @@ struct MessageTemplateContainer<Type, true>
 {
     using value_type = Type;
 
-    static bool acceptsConnectionFrom(const TokenData* other_side)
+    static bool acceptsConnectionFrom(const TokenType* other_side)
     {
         return dynamic_cast<const MessageTemplateContainer<Type, true>*>(other_side);
     }
@@ -158,7 +158,7 @@ public:
         return *this;
     }
 
-    bool acceptsConnectionFrom(const TokenData* other_side) const override
+    bool acceptsConnectionFrom(const TokenType* other_side) const override
     {
         return ValueContainer::acceptsConnectionFrom(other_side);
     }

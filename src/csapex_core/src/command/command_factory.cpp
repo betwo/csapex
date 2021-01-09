@@ -230,12 +230,12 @@ Command::Ptr CommandFactory::moveConnections(Connector* from, Connector* to)
     return meta;
 }
 
-CommandPtr CommandFactory::createVariadicInput(const AUUID& node_uuid, TokenDataConstPtr connection_type, const std::string& label, bool optional)
+CommandPtr CommandFactory::createVariadicInput(const AUUID& node_uuid, TokenTypeConstPtr connection_type, const std::string& label, bool optional)
 {
     return createVariadicPort(node_uuid, ConnectorType::INPUT, connection_type, label, optional);
 }
 
-CommandPtr CommandFactory::createVariadicOutput(const AUUID& node_uuid, TokenDataConstPtr connection_type, const std::string& label)
+CommandPtr CommandFactory::createVariadicOutput(const AUUID& node_uuid, TokenTypeConstPtr connection_type, const std::string& label)
 {
     return createVariadicPort(node_uuid, ConnectorType::OUTPUT, connection_type, label, false);
 }
@@ -250,12 +250,12 @@ CommandPtr CommandFactory::createVariadicSlot(const AUUID& node_uuid, const std:
     return createVariadicPort(node_uuid, ConnectorType::SLOT_T, makeEmpty<connection_types::AnyMessage>(), label, false);
 }
 
-CommandPtr CommandFactory::createVariadicPort(const AUUID& node_uuid, ConnectorType port_type, TokenDataConstPtr connection_type, const std::string& label)
+CommandPtr CommandFactory::createVariadicPort(const AUUID& node_uuid, ConnectorType port_type, TokenTypeConstPtr connection_type, const std::string& label)
 {
     std::shared_ptr<AddVariadicConnector> res = std::make_shared<AddVariadicConnector>(graph_uuid, node_uuid, port_type, connection_type, label);
     return res;
 }
-CommandPtr CommandFactory::createVariadicPort(const AUUID& node_uuid, ConnectorType port_type, TokenDataConstPtr connection_type, const std::string& label, bool optional)
+CommandPtr CommandFactory::createVariadicPort(const AUUID& node_uuid, ConnectorType port_type, TokenTypeConstPtr connection_type, const std::string& label, bool optional)
 {
     std::shared_ptr<AddVariadicConnector> res = std::make_shared<AddVariadicConnector>(graph_uuid, node_uuid, port_type, connection_type, label);
     res->setOptional(optional);

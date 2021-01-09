@@ -20,12 +20,12 @@ GenericVectorMessage::GenericVectorMessage() : Message(type<GenericVectorMessage
 {
 }
 
-bool GenericVectorMessage::canConnectTo(const TokenData* other_side) const
+bool GenericVectorMessage::canConnectTo(const TokenType* other_side) const
 {
     return pimpl->canConnectTo(other_side);
 }
 
-bool GenericVectorMessage::acceptsConnectionFrom(const TokenData* other_side) const
+bool GenericVectorMessage::acceptsConnectionFrom(const TokenType* other_side) const
 {
     return pimpl->acceptsConnectionFrom(other_side);
 }
@@ -48,7 +48,7 @@ void GenericVectorMessage::AnythingImplementation::decode(const YAML::Node& node
 {
 }
 
-bool GenericVectorMessage::AnythingImplementation::canConnectTo(const TokenData* other_side) const
+bool GenericVectorMessage::AnythingImplementation::canConnectTo(const TokenType* other_side) const
 {
     if (dynamic_cast<const EntryInterface*>(other_side)) {
         return true;
@@ -60,7 +60,7 @@ bool GenericVectorMessage::AnythingImplementation::canConnectTo(const TokenData*
     }
 }
 
-bool GenericVectorMessage::AnythingImplementation::acceptsConnectionFrom(const TokenData* other_side) const
+bool GenericVectorMessage::AnythingImplementation::acceptsConnectionFrom(const TokenType* other_side) const
 {
     if (dynamic_cast<const EntryInterface*>(other_side)) {
         return true;
@@ -82,7 +82,7 @@ void GenericVectorMessage::AnythingImplementation::deserialize(const Serializati
 
 // INSTANCED
 
-GenericVectorMessage::InstancedImplementation::InstancedImplementation(TokenData::ConstPtr type) : EntryInterface("Anything"), type_(type)
+GenericVectorMessage::InstancedImplementation::InstancedImplementation(TokenType::ConstPtr type) : EntryInterface("Anything"), type_(type)
 {
     apex_assert_hard(type_);
 }
@@ -96,13 +96,13 @@ bool GenericVectorMessage::InstancedImplementation::cloneData(const GenericVecto
 {
     value.clear();
     value.reserve(other.value.size());
-    for(const auto& v : other.value) {
+    for (const auto& v : other.value) {
         value.push_back(v->cloneAs<TokenData>());
     }
     return true;
 }
 
-bool GenericVectorMessage::InstancedImplementation::canConnectTo(const TokenData* other_side) const
+bool GenericVectorMessage::InstancedImplementation::canConnectTo(const TokenType* other_side) const
 {
     if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
         return nestedType()->canConnectTo(ei->nestedType().get());
@@ -118,7 +118,7 @@ bool GenericVectorMessage::InstancedImplementation::canConnectTo(const TokenData
     }
 }
 
-bool GenericVectorMessage::InstancedImplementation::acceptsConnectionFrom(const TokenData* other_side) const
+bool GenericVectorMessage::InstancedImplementation::acceptsConnectionFrom(const TokenType* other_side) const
 {
     if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
         return nestedType()->canConnectTo(ei->nestedType().get());
@@ -141,7 +141,7 @@ void GenericVectorMessage::InstancedImplementation::decode(const YAML::Node& nod
     value = node["values"].as<std::vector<TokenData::Ptr> >();
 }
 
-TokenData::Ptr GenericVectorMessage::InstancedImplementation::nestedType() const
+TokenType::Ptr GenericVectorMessage::InstancedImplementation::nestedType() const
 {
     apex_assert_hard(type_);
     return type_->cloneAs<TokenData>();

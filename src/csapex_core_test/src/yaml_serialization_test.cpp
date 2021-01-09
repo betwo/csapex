@@ -73,7 +73,6 @@ TEST_F(YAMLSerializationTest, YamlDeserializationWorksWithGenericVector)
         {
             GenericVectorMessage::Ptr message = GenericVectorMessage::make<MockMessage>();
 
-
             std::shared_ptr<std::vector<MockMessage>> vector = std::make_shared<std::vector<MockMessage>>();
             for (int i = 0; i < 10; ++i) {
                 vector->emplace_back();

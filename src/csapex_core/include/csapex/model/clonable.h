@@ -82,7 +82,7 @@ public:                                                                         
     }
 #define _CLONABLE_BLOCK_CLONE_DATA(Instance)                                                                                                                                                           \
 protected:                                                                                                                                                                                             \
-    virtual bool cloneData(const Instance& other)                                                                                                                                            \
+    virtual bool cloneData(const Instance& other)                                                                                                                                                      \
     {                                                                                                                                                                                                  \
         *this = other;                                                                                                                                                                                 \
         return true;                                                                                                                                                                                   \

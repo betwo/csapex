@@ -107,7 +107,7 @@ void GraphIO::loadGraphFrom(const YAML::Node& doc)
     timer->restart();
 
     SemanticVersion version;
-    if(doc["version"].IsDefined()) {
+    if (doc["version"].IsDefined()) {
         version = doc["version"].as<SemanticVersion>();
     } else {
         // with 0.9.7 versioning was introduced, so assume that the version was 0.9.6

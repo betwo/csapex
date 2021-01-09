@@ -13,7 +13,6 @@
 #include <unordered_map>
 #include <typeindex>
 
-
 using namespace csapex;
 using namespace csapex::param;
 

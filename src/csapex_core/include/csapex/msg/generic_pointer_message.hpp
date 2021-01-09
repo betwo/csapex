@@ -34,7 +34,7 @@ public:
         value = ptr;
     }
 
-    bool acceptsConnectionFrom(const TokenData* other_side) const override
+    bool acceptsConnectionFrom(const TokenType* other_side) const override
     {
         return descriptiveName() == other_side->descriptiveName();
     }

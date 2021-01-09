@@ -76,7 +76,6 @@ NodeWorker::NodeWorker(NodeHandlePtr node_handle)
 
     observe(node_handle_->getOutputTransition()->messages_processed, outgoing_messages_processed);
 
-
     for (const EventPtr& e : node_handle->getEvents()) {
         const std::string& label = e->getLabel();
         if (!trigger_activated_ && label == "activated")
@@ -101,9 +100,11 @@ NodeWorker::NodeWorker(NodeHandlePtr node_handle)
             slot_disable_ = s.get();
     }
     if (!slot_enable_)
-        slot_enable_ = node_handle_->addSlot(makeEmpty<connection_types::AnyMessage>(), "enable", [this]() { setProcessingEnabled(true); }, true, true);
+        slot_enable_ = node_handle_->addSlot(
+            makeEmpty<connection_types::AnyMessage>(), "enable", [this]() { setProcessingEnabled(true); }, true, true);
     if (!slot_disable_)
-        slot_disable_ = node_handle_->addSlot(makeEmpty<connection_types::AnyMessage>(), "disable", [this]() { setProcessingEnabled(false); }, false, true);
+        slot_disable_ = node_handle_->addSlot(
+            makeEmpty<connection_types::AnyMessage>(), "disable", [this]() { setProcessingEnabled(false); }, false, true);
 
     observe(node_handle_->activation_changed, [this]() {
         if (node_handle_->isActive()) {
@@ -575,7 +576,7 @@ bool NodeWorker::startProcessingMessages()
     NodePtr node = node_handle_->getNode().lock();
     apex_assert_hard(node);
 
-    //rememberThreadId();
+    // rememberThreadId();
 
     if (node->hasChangedParameters()) {
         handleChangedParameters();
@@ -749,7 +750,7 @@ void NodeWorker::finishTimer(Timer::Ptr t)
 
 void NodeWorker::notifyMessagesProcessedDownstream()
 {
-    //assertSameThreadId();
+    // assertSameThreadId();
 
     if (auto subgraph = std::dynamic_pointer_cast<SubgraphNode>(node_handle_->getNode().lock())) {
         subgraph->notifyMessagesProcessed();
@@ -765,7 +766,7 @@ void NodeWorker::notifyMessagesProcessedDownstream()
         }
 
         // TRACE APEX_DEBUG_TRACE getNode()->ainfo << "notify, try process" << std::endl;
-        //triggerTryProcess();
+        // triggerTryProcess();
 
     } else {
         // TRACE APEX_DEBUG_TRACE getNode()->aerr << "cannot notify, no current exec mode" << std::endl;

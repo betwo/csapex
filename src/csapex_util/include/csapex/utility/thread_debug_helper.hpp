@@ -9,12 +9,11 @@
 
 namespace csapex
 {
-
 class ThreadDebugHelper
 {
 public:
-    virtual ~ThreadDebugHelper() {
-
+    virtual ~ThreadDebugHelper()
+    {
     }
 
 protected:
@@ -36,6 +35,6 @@ private:
     std::thread::id processing_thread_id_;
 };
 
-}
+}  // namespace csapex
 
-#endif // THREAD_DEBUG_HELPER_HPP
+#endif  // THREAD_DEBUG_HELPER_HPP

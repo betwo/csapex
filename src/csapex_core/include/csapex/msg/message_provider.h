@@ -19,7 +19,7 @@ public:
 public:
     virtual ~MessageProvider();
 
-    TokenData::ConstPtr getType() const;
+    TokenType::ConstPtr getType() const;
 
     virtual void load(const std::string& file) = 0;
     virtual void parameterChanged();
@@ -50,14 +50,14 @@ public:
 
 protected:
     MessageProvider();
-    void setType(TokenData::Ptr type);
+    void setType(TokenType::Ptr type);
     void setSlotCount(std::size_t slot_count);
 
 protected:
     GenericState state;
 
 private:
-    TokenData::Ptr type_;
+    TokenType::Ptr type_;
 
     std::string name_;
     std::size_t slot_count_;

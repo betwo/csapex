@@ -151,7 +151,7 @@ GraphView::GraphView(csapex::GraphFacadePtr graph_facade, CsApexViewCore& view_c
         apex_assert_hard(facade);
         nodeAdded(facade);
     }
-    
+
     setupWidgets();
 }
 
@@ -1235,7 +1235,7 @@ void GraphView::updateBoxInformation()
         MovableGraphicsProxyWidget* proxy = dynamic_cast<MovableGraphicsProxyWidget*>(item);
         if (proxy) {
             NodeBox* b = proxy->getBox();
-            if(b->isVisible()) {
+            if (b->isVisible()) {
                 b->updateBoxInformation(graph_facade_.get());
             }
         }

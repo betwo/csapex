@@ -184,7 +184,7 @@ void CsApexViewCoreProxy::handlePacket(const StreamableConstPtr& packet)
     (void)packet;
 }
 
-void CsApexViewCoreProxy::handleBroadcast(const BroadcastMessageConstPtr&  packet)
+void CsApexViewCoreProxy::handleBroadcast(const BroadcastMessageConstPtr& packet)
 {
     if (packet) {
         //                std::cout << "type=" << (int) serial->getPacketType() << std::endl;

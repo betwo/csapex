@@ -180,7 +180,7 @@ int main(int argc, char** argv)
 
     int effective_argc = argc;
     std::string path_to_bin(argv[0]);
-    
+
     if (!settings.knows("path_to_bin")) {
         settings.addTemporary(csapex::param::factory::declareFileInputPath("path_to_bin", path_to_bin));
     } else {

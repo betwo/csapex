@@ -6,6 +6,7 @@
 #include <csapex/msg/token_traits.h>
 #include <csapex/utility/assert.h>
 #include <csapex/serialization/io/std_io.h>
+#include <csapex/model/token_type.h>
 
 /// SYSTEM
 #include <iostream>
@@ -16,12 +17,12 @@ TokenData::TokenData()
 {
 }
 
-TokenData::TokenData(const std::string& type_name) : type_name_(type_name)
+TokenData::TokenData(const std::string& type_name) : TokenType(type_name)
 {
     setDescriptiveName(type_name);
 }
 
-TokenData::TokenData(const std::string& type_name, const std::string& descriptive_name) : type_name_(type_name), descriptive_name_(descriptive_name)
+TokenData::TokenData(const std::string& type_name, const std::string& descriptive_name) : TokenType(type_name, descriptive_name)
 {
 }
 
@@ -29,45 +30,9 @@ TokenData::~TokenData()
 {
 }
 
-void TokenData::setDescriptiveName(const std::string& name)
+std::shared_ptr<TokenType> TokenData::toType() const
 {
-    descriptive_name_ = name;
-}
-
-bool TokenData::canConnectTo(const TokenData* other_side) const
-{
-    return other_side->acceptsConnectionFrom(this);
-}
-
-bool TokenData::acceptsConnectionFrom(const TokenData* other_side) const
-{
-    return type_name_ == other_side->typeName();
-}
-
-std::string TokenData::descriptiveName() const
-{
-    return descriptive_name_;
-}
-
-std::string TokenData::typeName() const
-{
-    return type_name_;
-}
-
-void TokenData::serialize(SerializationBuffer& data, SemanticVersion& version) const
-{
-    data << type_name_;
-    data << descriptive_name_;
-}
-void TokenData::deserialize(const SerializationBuffer& data, const SemanticVersion& version)
-{
-    data >> type_name_;
-    data >> descriptive_name_;
-}
-
-TokenData::Ptr TokenData::toType() const
-{
-    return cloneAs<TokenData>();
+    return cloneAs<TokenType>();
 }
 
 bool TokenData::isValid() const
@@ -75,15 +40,6 @@ bool TokenData::isValid() const
     return true;
 }
 
-bool TokenData::isContainer() const
-{
-    return false;
-}
-
-TokenData::Ptr TokenData::nestedType() const
-{
-    throw std::logic_error("cannot get nested type for non-container messages");
-}
 TokenData::ConstPtr TokenData::nestedValue(std::size_t index) const
 {
     throw std::logic_error("cannot get nested value for non-container messages");

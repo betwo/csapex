@@ -107,7 +107,7 @@ private:
             return true;
         }
 
-        bool canConnectTo(const TokenData* other_side) const override
+        bool canConnectTo(const TokenType* other_side) const override
         {
             if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
                 return nestedType()->canConnectTo(ei->nestedType().get());
@@ -132,7 +132,7 @@ private:
                 }
             }
         }
-        bool acceptsConnectionFrom(const TokenData* other_side) const override
+        bool acceptsConnectionFrom(const TokenType* other_side) const override
         {
             if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
                 return nestedType()->canConnectTo(ei->nestedType().get());
@@ -159,7 +159,7 @@ private:
             *value = node["values"].as<std::vector<Payload>>();
         }
 
-        TokenData::Ptr nestedType() const override
+        TokenType::Ptr nestedType() const override
         {
             return makeTypeSwitch(Tag<Payload>());
         }
@@ -384,8 +384,8 @@ private:
     public:
         AnythingImplementation();
 
-        bool canConnectTo(const TokenData* other_side) const override;
-        bool acceptsConnectionFrom(const TokenData* other_side) const override;
+        bool canConnectTo(const TokenType* other_side) const override;
+        bool acceptsConnectionFrom(const TokenType* other_side) const override;
         void encode(YAML::Node& node) const override;
         void decode(const YAML::Node& node) override;
 
@@ -406,14 +406,14 @@ private:
         friend class GenericVectorMessage;
 
     public:
-        InstancedImplementation(TokenData::ConstPtr type);
+        InstancedImplementation(TokenType::ConstPtr type);
 
-        bool canConnectTo(const TokenData* other_side) const override;
-        bool acceptsConnectionFrom(const TokenData* other_side) const override;
+        bool canConnectTo(const TokenType* other_side) const override;
+        bool acceptsConnectionFrom(const TokenType* other_side) const override;
         void encode(YAML::Node& node) const override;
         void decode(const YAML::Node& node) override;
 
-        TokenData::Ptr nestedType() const override;
+        TokenType::Ptr nestedType() const override;
 
         void addNestedValue(const TokenData::ConstPtr& msg) override;
         TokenData::ConstPtr nestedValue(std::size_t i) const override;
@@ -433,7 +433,7 @@ private:
         InstancedImplementation();
 
     private:
-        TokenData::ConstPtr type_;
+        TokenType::ConstPtr type_;
         std::vector<TokenDataPtr> value;
     };
 
@@ -714,8 +714,8 @@ public:
         pimpl->decode(node);
     }
 
-    bool canConnectTo(const TokenData* other_side) const override;
-    bool acceptsConnectionFrom(const TokenData* other_side) const override;
+    bool canConnectTo(const TokenType* other_side) const override;
+    bool acceptsConnectionFrom(const TokenType* other_side) const override;
 
     std::string descriptiveName() const override;
 
@@ -723,7 +723,7 @@ public:
     {
         return true;
     }
-    TokenData::Ptr nestedType() const override
+    TokenType::Ptr nestedType() const override
     {
         return pimpl->nestedType();
     }

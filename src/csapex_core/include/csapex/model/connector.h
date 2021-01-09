@@ -32,7 +32,7 @@ public:
     virtual bool isEssential() const = 0;
 
     virtual std::string getLabel() const = 0;
-    virtual TokenDataConstPtr getType() const = 0;
+    virtual TokenTypeConstPtr getType() const = 0;
     virtual ConnectorType getConnectorType() const = 0;
     virtual ConnectorDescription getDescription() const = 0;
 
@@ -55,7 +55,7 @@ public:
     slim_signal::Signal<void(bool)> enabled_changed;
     slim_signal::Signal<void(bool)> essential_changed;
 
-    slim_signal::Signal<void(TokenDataConstPtr)> typeChanged;
+    slim_signal::Signal<void(TokenTypeConstPtr)> typeChanged;
     slim_signal::Signal<void(std::string)> labelChanged;
 
 protected:

@@ -39,8 +39,7 @@ IntervalParameter& IntervalParameter::operator=(const IntervalParameter& interva
         if (type() == typeid(std::pair<int, int>)) {
             change = std::any_cast<int>(values_.first) != std::any_cast<int>(interval.values_.first) || std::any_cast<int>(values_.second) != std::any_cast<int>(interval.values_.second);
         } else if (type() == typeid(std::pair<double, double>)) {
-            change = std::any_cast<double>(values_.first) != std::any_cast<double>(interval.values_.first) ||
-                     std::any_cast<double>(values_.second) != std::any_cast<double>(interval.values_.second);
+            change = std::any_cast<double>(values_.first) != std::any_cast<double>(interval.values_.first) || std::any_cast<double>(values_.second) != std::any_cast<double>(interval.values_.second);
         }
     }
     values_ = interval.values_;

@@ -42,7 +42,7 @@ public:
         static csapex::DirectMessageSerializerRegistered<connection_types::GenericValueMessage, Type> reg_s;
     }
 
-    bool acceptsConnectionFrom(const TokenData* other_side) const override
+    bool acceptsConnectionFrom(const TokenType* other_side) const override
     {
         if (dynamic_cast<const GenericValueMessage<Type>*>(other_side)) {
             return true;

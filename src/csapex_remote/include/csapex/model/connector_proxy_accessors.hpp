@@ -15,7 +15,7 @@ HANDLE_STATIC_ACCESSOR(IsConnected, bool, isConnected)
 HANDLE_DYNAMIC_ACCESSOR(IsEssential, essential_changed, bool, isEssential)
 HANDLE_DYNAMIC_ACCESSOR(GetLabel, labelChanged, std::string, getLabel)
 HANDLE_DYNAMIC_ACCESSOR(IsEnabled, enabled_changed, bool, isEnabled)
-HANDLE_DYNAMIC_ACCESSOR(GetType, typeChanged, TokenDataConstPtr, getType)
+HANDLE_DYNAMIC_ACCESSOR(GetType, typeChanged, TokenTypeConstPtr, getType)
 
 HANDLE_ACCESSOR(GetCount, int, getCount)
 HANDLE_ACCESSOR(GetSequenceNumber, int, sequenceNumber)

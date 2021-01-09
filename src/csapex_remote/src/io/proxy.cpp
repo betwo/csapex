@@ -12,7 +12,7 @@ Proxy::~Proxy()
 {
 }
 
-SessionPtr Proxy::getSession() const 
+SessionPtr Proxy::getSession() const
 {
     return session_;
 }

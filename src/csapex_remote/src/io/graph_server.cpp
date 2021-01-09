@@ -92,8 +92,7 @@ void GraphServer::startObservingGraph(const GraphFacadeImplementationPtr& graph_
  **/
 #define HANDLE_ACCESSOR(_enum, type, function)
 #define HANDLE_STATIC_ACCESSOR(_enum, type, function)
-#define HANDLE_DYNAMIC_ACCESSOR(_enum, signal, type, function)                                                                                                                                         \
-    observe(graph->signal, [channel](const type& new_value) { channel->sendNote<GraphNote>(GraphNoteType::function##Changed, new_value); });
+#define HANDLE_DYNAMIC_ACCESSOR(_enum, signal, type, function) observe(graph->signal, [channel](const type& new_value) { channel->sendNote<GraphNote>(GraphNoteType::function##Changed, new_value); });
 #define HANDLE_SIGNAL(_enum, signal) observe(graph->signal, [channel]() { channel->sendNote<GraphNote>(GraphNoteType::_enum##Triggered); });
 
 #include <csapex/model/graph_proxy_accessors.hpp>

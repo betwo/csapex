@@ -33,7 +33,7 @@ ResponsePtr RequestParameter::ParameterRequest::execute(const SessionPtr& sessio
     if (id_.global()) {
         apex_assert_hard(!id_.globalName().empty());
         auto param = core.getSettings().getNoThrow(id_.globalName());
-        if(param) {
+        if (param) {
             response = std::make_shared<ParameterResponse>(param, getRequestID());
         }
     } else {

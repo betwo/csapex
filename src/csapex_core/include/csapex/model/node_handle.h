@@ -46,26 +46,26 @@ public:
     void setNodeRunner(NodeRunnerWeakPtr runner);
     NodeRunnerPtr getNodeRunner() const;
 
-    Input* addInput(TokenDataConstPtr type, const std::string& label, bool optional) override;
+    Input* addInput(TokenTypeConstPtr type, const std::string& label, bool optional) override;
     void manageInput(InputPtr in);
     bool isParameterInput(const UUID& id) const override;
 
-    Output* addOutput(TokenDataConstPtr type, const std::string& label) override;
+    Output* addOutput(TokenTypeConstPtr type, const std::string& label) override;
     void manageOutput(OutputPtr out);
     bool isParameterOutput(const UUID& id) const override;
 
-    Slot* addSlot(TokenDataConstPtr type, const std::string& label, std::function<void(Slot*, const TokenPtr&)> callback, bool active, bool blocking) override;
-    Slot* addSlot(TokenDataConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active, bool blocking) override;
-    Slot* addSlot(TokenDataConstPtr type, const std::string& label, std::function<void()> callback, bool active, bool blocking) override;
+    Slot* addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(Slot*, const TokenPtr&)> callback, bool active, bool blocking) override;
+    Slot* addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active, bool blocking) override;
+    Slot* addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void()> callback, bool active, bool blocking) override;
     void manageSlot(SlotPtr s);
 
-    Event* addEvent(TokenDataConstPtr type, const std::string& label) override;
+    Event* addEvent(TokenTypeConstPtr type, const std::string& label) override;
     void manageEvent(EventPtr t);
 
-    InputPtr addInternalInput(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label, bool optional);
-    OutputPtr addInternalOutput(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label);
-    SlotPtr addInternalSlot(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback);
-    EventPtr addInternalEvent(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label);
+    InputPtr addInternalInput(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, bool optional);
+    OutputPtr addInternalOutput(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label);
+    SlotPtr addInternalSlot(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback);
+    EventPtr addInternalEvent(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label);
 
     ConnectablePtr getConnector(const UUID& uuid) const;
     ConnectablePtr getConnectorNoThrow(const UUID& uuid) const noexcept;

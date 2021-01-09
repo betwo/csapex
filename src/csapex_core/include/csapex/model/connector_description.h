@@ -22,7 +22,7 @@ public:
     bool is_parameter;
     bool is_variadic;
 
-    TokenDataConstPtr token_type;
+    TokenTypeConstPtr token_type;
 
     UUID id;
 
@@ -53,11 +53,11 @@ public:
 
     ConnectorDescription();
 
-    ConnectorDescription(const AUUID& owner, ConnectorType connector_type, const TokenDataConstPtr& token_type, const std::string& label);
+    ConnectorDescription(const AUUID& owner, ConnectorType connector_type, const TokenTypeConstPtr& token_type, const std::string& label);
 
     ConnectorDescription(const AUUID& owner, ConnectorType connector_type, const std::string& label);
 
-    ConnectorDescription(const AUUID& owner, const UUID& uuid, ConnectorType connector_type, const TokenDataConstPtr& token_type, const std::string& label);
+    ConnectorDescription(const AUUID& owner, const UUID& uuid, ConnectorType connector_type, const TokenTypeConstPtr& token_type, const std::string& label);
 
     ConnectorDescription& setOptional(bool optional);
     ConnectorDescription& setParameter(bool parameter);

@@ -50,7 +50,6 @@ public:
     void write(const StreamableConstPtr& packet);
     void write(const std::string& message);
 
-
     //
     // REQUEST
     //

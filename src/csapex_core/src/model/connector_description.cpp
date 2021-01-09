@@ -13,7 +13,7 @@ ConnectorDescription::ConnectorDescription() : connector_type(ConnectorType::NON
 {
 }
 
-ConnectorDescription::ConnectorDescription(const AUUID& owner, ConnectorType connector_type, const TokenDataConstPtr& token_type, const std::string& label)
+ConnectorDescription::ConnectorDescription(const AUUID& owner, ConnectorType connector_type, const TokenTypeConstPtr& token_type, const std::string& label)
   : owner(owner), connector_type(connector_type), label(label), optional(false), is_parameter(false), token_type(token_type), id(UUID::NONE), valid(true)
 {
 }
@@ -31,7 +31,7 @@ ConnectorDescription::ConnectorDescription(const AUUID& owner, ConnectorType con
 {
 }
 
-ConnectorDescription::ConnectorDescription(const AUUID& owner, const UUID& uuid, ConnectorType connector_type, const TokenDataConstPtr& token_type, const std::string& label)
+ConnectorDescription::ConnectorDescription(const AUUID& owner, const UUID& uuid, ConnectorType connector_type, const TokenTypeConstPtr& token_type, const std::string& label)
   : owner(owner), connector_type(connector_type), label(label), optional(false), is_parameter(false), is_variadic(false), token_type(token_type), id(uuid), valid(true)
 {
 }

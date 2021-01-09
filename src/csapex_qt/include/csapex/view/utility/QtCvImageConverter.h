@@ -86,30 +86,42 @@ public:
      * @param mat OpenCV image
      * @return Qt image
      */
-    static QImage mat2QImage(const cv::Mat& mat)
+    static QImage mat2QImage(const cv::Mat& mat, bool bgr = true)
     {
         switch (mat.depth()) {
             case CV_8U:
-                return mat2QImageImpl<unsigned char>(mat);
+                return mat2QImageImpl<unsigned char>(mat, bgr);
             case (int)CV_8S:
-                return mat2QImageImpl<char>(mat);
+                return mat2QImageImpl<char>(mat, bgr);
             case CV_16U:
-                return mat2QImageImpl<unsigned short>(mat);
+                return mat2QImageImpl<unsigned short>(mat, bgr);
             case (int)CV_16S:
-                return mat2QImageImpl<short>(mat);
+                return mat2QImageImpl<short>(mat, bgr);
             case (int)CV_32S:
-                return mat2QImageImpl<int>(mat);
+                return mat2QImageImpl<int>(mat, bgr);
             case CV_32F:
-                return mat2QImageImpl<float>(mat);
+                return mat2QImageImpl<float>(mat, bgr);
             case CV_64F:
-                return mat2QImageImpl<double>(mat);
+                return mat2QImageImpl<double>(mat, bgr);
             default:
                 throw std::runtime_error("cannot convert image, unknown type");
         }
     }
 
+private:
     template <typename T>
-    static QImage mat2QImageImpl(const cv::Mat& mat)
+    static QImage mat2QImageImpl(const cv::Mat& mat, bool bgr)
+    {
+        const int bytes_per_pixel = sizeof(T);
+        if (bytes_per_pixel == 1) {
+            return mat2QImageImplNoCompression<T>(mat, bgr);
+        } else {
+            return mat2QImageImplCompression<T>(mat, bgr);
+        }
+    }
+
+    template <typename T>
+    static QImage mat2QImageImplNoCompression(const cv::Mat& mat, bool bgr)
     {
         int h = mat.rows;
         int w = mat.cols;
@@ -121,7 +133,7 @@ public:
         assert(h > 0);
         assert(data != NULL);
 
-        for (int y = 0; y < h; y++, data += mat.step1() / sizeof(T)) {
+        for (int y = 0; y < h; y++, data += mat.step1()) {
             for (int x = 0; x < w; x++) {
                 char r = 0, g = 0, b = 0, a = 0;
                 if (channels == 1) {
@@ -132,6 +144,56 @@ public:
                     r = data[x * channels + 2];
                     g = data[x * channels + 1];
                     b = data[x * channels];
+                }
+
+                if (channels == 4) {
+                    a = data[x * channels + 3];
+                    qimg.setPixel(x, y, QTRGBConverter::rgba(r, g, b, a));
+                } else {
+                    qimg.setPixel(x, y, QTRGBConverter::rgb(r, g, b));
+                }
+            }
+        }
+        return qimg;
+    }
+
+    template <typename T>
+    static QImage mat2QImageImplCompression(const cv::Mat& mat, bool bgr)
+    {
+        int h = mat.rows;
+        int w = mat.cols;
+        int channels = mat.channels();
+
+        QImage qimg(w, h, QImage::Format_ARGB32);
+        const T* data = reinterpret_cast<const T*>(mat.data);
+
+        const double factor = 1.0 / std::pow(2, (sizeof(T) - 1) * 8 - 2);
+
+        assert(w > 0);
+        assert(h > 0);
+        assert(data != NULL);
+
+        int offset_r = 2;
+        int offset_g = 1;
+        int offset_b = 0;
+
+        if (!bgr) {
+            offset_r = 0;
+            offset_b = 2;
+        }
+
+        for (int y = 0; y < h; y++, data += mat.step1()) {
+            for (int x = 0; x < w; x++) {
+                char r = 0, g = 0, b = 0, a = 0;
+                if (channels == 1) {
+                    const auto raw = data[x * channels];
+                    r = raw * factor;
+                    g = r;
+                    b = r;
+                } else if (channels == 3 || channels == 4) {
+                    r = data[x * channels + offset_r] * factor;
+                    g = data[x * channels + offset_g] * factor;
+                    b = data[x * channels + offset_b] * factor;
                 }
 
                 if (channels == 4) {

@@ -93,7 +93,6 @@ void testBinarySerialization(T value, const std::string& expected_type)
     }
 }
 
-
 template <typename T>
 void testSerialization(T value, const std::string& expected_type)
 {

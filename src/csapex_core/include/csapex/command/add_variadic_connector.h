@@ -16,7 +16,7 @@ class CSAPEX_COMMAND_EXPORT AddVariadicConnector : public CommandImplementation<
     COMMAND_HEADER(AddVariadicConnector);
 
 public:
-    AddVariadicConnector(const AUUID& graph_id, const AUUID& node, const ConnectorType& connector_type, const TokenDataConstPtr& type, const std::string& label);
+    AddVariadicConnector(const AUUID& graph_id, const AUUID& node, const ConnectorType& connector_type, const TokenTypeConstPtr& type, const std::string& label);
     RelayMapping getMap() const;
 
     void setLabel(const std::string& label);
@@ -34,7 +34,7 @@ protected:
 
 private:
     ConnectorType connector_type;
-    TokenDataConstPtr token_type;
+    TokenTypeConstPtr token_type;
     RelayMapping map;
 
     std::string label_;

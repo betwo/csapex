@@ -21,8 +21,8 @@ public:
     AnyMessage();
 
 public:
-    bool canConnectTo(const TokenData* other_side) const override;
-    bool acceptsConnectionFrom(const TokenData* other_side) const override;
+    bool canConnectTo(const TokenType* other_side) const override;
+    bool acceptsConnectionFrom(const TokenType* other_side) const override;
 
     void serialize(SerializationBuffer& data, SemanticVersion& version) const override;
     void deserialize(const SerializationBuffer& data, const SemanticVersion& version) override;

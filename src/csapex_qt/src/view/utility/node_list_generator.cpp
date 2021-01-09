@@ -102,7 +102,6 @@ void NodeListGenerator::listAvailableNodeTypes(QStandardItemModel* model)
         item->setData(properties, Qt::UserRole + 4);
         item->setData(QString::fromStdString(csapex::mime::node), Qt::UserRole + 5);
 
-
         model->appendRow(item);
     }
 }

@@ -6,7 +6,6 @@
 #include <csapex/serialization/io/std_io.h>
 #include <csapex/utility/yaml.h>
 
-
 CSAPEX_REGISTER_PARAM(SetParameter)
 
 using namespace csapex;

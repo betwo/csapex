@@ -270,7 +270,7 @@ void NodeHandle::setNodeState(NodeStatePtr memento)
 void NodeHandle::triggerNodeStateChanged()
 {
     node_state_changed();
-    if(node_) {
+    if (node_) {
         node_->stateChanged();
     }
 }
@@ -366,7 +366,8 @@ void NodeHandle::makeParameterConnectable(csapex::param::ParameterPtr p)
 
     if (param::TriggerParameterPtr t = std::dynamic_pointer_cast<param::TriggerParameter>(p)) {
         Event* trigger = NodeModifier::addEvent(t->name());
-        Slot* slot = NodeModifier::addSlot(t->name(), [t]() { t->trigger(); }, false);
+        Slot* slot = NodeModifier::addSlot(
+            t->name(), [t]() { t->trigger(); }, false);
         node_->addParameterCallback(t, [slot, trigger](param::Parameter*) {
             auto token = slot->getToken();
             if (token) {
@@ -502,7 +503,7 @@ void NodeHandle::updateParameterValue(Connectable* s)
     }
 }
 
-Input* NodeHandle::addInput(TokenDataConstPtr type, const std::string& label, bool optional)
+Input* NodeHandle::addInput(TokenTypeConstPtr type, const std::string& label, bool optional)
 {
     UUIDProviderPtr uuid_provider = uuid_provider_.lock();
     apex_assert_hard(uuid_provider);
@@ -519,7 +520,7 @@ Input* NodeHandle::addInput(TokenDataConstPtr type, const std::string& label, bo
     return c.get();
 }
 
-Output* NodeHandle::addOutput(TokenDataConstPtr type, const std::string& label)
+Output* NodeHandle::addOutput(TokenTypeConstPtr type, const std::string& label)
 {
     UUIDProviderPtr uuid_provider = uuid_provider_.lock();
     apex_assert_hard(uuid_provider);
@@ -534,7 +535,7 @@ Output* NodeHandle::addOutput(TokenDataConstPtr type, const std::string& label)
     return c.get();
 }
 
-Slot* NodeHandle::addSlot(TokenDataConstPtr type, const std::string& label, std::function<void()> callback, bool active, bool blocking)
+Slot* NodeHandle::addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void()> callback, bool active, bool blocking)
 {
     UUIDProviderPtr uuid_provider = uuid_provider_.lock();
     apex_assert_hard(uuid_provider);
@@ -549,7 +550,7 @@ Slot* NodeHandle::addSlot(TokenDataConstPtr type, const std::string& label, std:
     return slot.get();
 }
 
-Slot* NodeHandle::addSlot(TokenDataConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active, bool blocking)
+Slot* NodeHandle::addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active, bool blocking)
 {
     UUIDProviderPtr uuid_provider = uuid_provider_.lock();
     apex_assert_hard(uuid_provider);
@@ -564,7 +565,7 @@ Slot* NodeHandle::addSlot(TokenDataConstPtr type, const std::string& label, std:
     return slot.get();
 }
 
-Slot* NodeHandle::addSlot(TokenDataConstPtr type, const std::string& label, std::function<void(Slot*, const TokenPtr&)> callback, bool active, bool blocking)
+Slot* NodeHandle::addSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(Slot*, const TokenPtr&)> callback, bool active, bool blocking)
 {
     UUIDProviderPtr uuid_provider = uuid_provider_.lock();
     apex_assert_hard(uuid_provider);
@@ -578,7 +579,7 @@ Slot* NodeHandle::addSlot(TokenDataConstPtr type, const std::string& label, std:
     return slot.get();
 }
 
-Event* NodeHandle::addEvent(TokenDataConstPtr type, const std::string& label)
+Event* NodeHandle::addEvent(TokenTypeConstPtr type, const std::string& label)
 {
     UUIDProviderPtr uuid_provider = uuid_provider_.lock();
     apex_assert_hard(uuid_provider);
@@ -592,7 +593,7 @@ Event* NodeHandle::addEvent(TokenDataConstPtr type, const std::string& label)
     return event.get();
 }
 
-InputPtr NodeHandle::addInternalInput(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label, bool optional)
+InputPtr NodeHandle::addInternalInput(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, bool optional)
 {
     InputPtr in = std::make_shared<Input>(internal_uuid, shared_from_this());
     in->setType(type);
@@ -606,7 +607,7 @@ InputPtr NodeHandle::addInternalInput(const TokenDataConstPtr& type, const UUID&
     return in;
 }
 
-OutputPtr NodeHandle::addInternalOutput(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label)
+OutputPtr NodeHandle::addInternalOutput(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label)
 {
     OutputPtr out = std::make_shared<StaticOutput>(internal_uuid, shared_from_this());
     out->setType(type);
@@ -619,7 +620,7 @@ OutputPtr NodeHandle::addInternalOutput(const TokenDataConstPtr& type, const UUI
     return out;
 }
 
-SlotPtr NodeHandle::addInternalSlot(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback)
+SlotPtr NodeHandle::addInternalSlot(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback)
 {
     SlotPtr slot = std::make_shared<Slot>(callback, internal_uuid, false, false, shared_from_this());
     slot->setLabel(label);
@@ -634,7 +635,7 @@ SlotPtr NodeHandle::addInternalSlot(const TokenDataConstPtr& type, const UUID& i
     return slot;
 }
 
-EventPtr NodeHandle::addInternalEvent(const TokenDataConstPtr& type, const UUID& internal_uuid, const std::string& label)
+EventPtr NodeHandle::addInternalEvent(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label)
 {
     EventPtr event = std::make_shared<Event>(internal_uuid, shared_from_this());
     event->setLabel(label);

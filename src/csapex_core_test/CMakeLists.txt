@@ -28,3 +28,5 @@ catkin_add_gtest(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     ${catkin_LIBRARIES}
     gtest gtest_main)
+
+add_subdirectory(test)

@@ -62,8 +62,8 @@ public:
     void setLabel(const std::string& label);
     std::string getLabel() const override;
 
-    void setType(TokenData::ConstPtr type);
-    TokenData::ConstPtr getType() const override;
+    void setType(TokenType::ConstPtr type);
+    TokenType::ConstPtr getType() const override;
 
     ConnectorType getConnectorType() const override = 0;
 
@@ -130,7 +130,7 @@ protected:
 
     std::string label_;
 
-    TokenData::ConstPtr type_;
+    TokenType::ConstPtr type_;
     std::vector<ConnectionPtr> connections_;
 
     std::atomic<int> count_;

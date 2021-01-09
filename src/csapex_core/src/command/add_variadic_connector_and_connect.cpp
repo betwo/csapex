@@ -21,7 +21,7 @@ using namespace command;
 
 CSAPEX_REGISTER_COMMAND_SERIALIZER(AddVariadicConnectorAndConnect)
 
-AddVariadicConnectorAndConnect::AddVariadicConnectorAndConnect(const AUUID& graph_id, const AUUID& node, const ConnectorType& connector_type, const TokenDataConstPtr& type, const std::string& label,
+AddVariadicConnectorAndConnect::AddVariadicConnectorAndConnect(const AUUID& graph_id, const AUUID& node, const ConnectorType& connector_type, const TokenTypeConstPtr& type, const std::string& label,
                                                                const UUID& target, bool move, bool external)
   : AddVariadicConnector(graph_id, node, connector_type, type, label), target_(target), move_(move), external_(external)
 {

@@ -21,7 +21,7 @@ public:
 
 public:
     CommandPtr deleteAllNodes(const std::vector<UUID>& uuids);
-    CommandPtr deleteAllConnectionsFromNodes(const std::vector<UUID>& uuids, bool is_transaction=true);
+    CommandPtr deleteAllConnectionsFromNodes(const std::vector<UUID>& uuids, bool is_transaction = true);
 
     CommandPtr addConnection(const UUID& from, const UUID& to, bool active);
 
@@ -46,13 +46,13 @@ public:
     CommandPtr setMaximumFrequencyRecursively(const std::vector<UUID>& node_uuids, double frequency);
     CommandPtr setLoggerLevelRecursively(const std::vector<UUID>& node_uuids, int level);
 
-    CommandPtr createVariadicInput(const AUUID& node_uuid, TokenDataConstPtr connection_type, const std::string& label, bool optional);
-    CommandPtr createVariadicOutput(const AUUID& node_uuid, TokenDataConstPtr connection_type, const std::string& label);
+    CommandPtr createVariadicInput(const AUUID& node_uuid, TokenTypeConstPtr connection_type, const std::string& label, bool optional);
+    CommandPtr createVariadicOutput(const AUUID& node_uuid, TokenTypeConstPtr connection_type, const std::string& label);
     CommandPtr createVariadicEvent(const AUUID& node_uuid, const std::string& label);
     CommandPtr createVariadicSlot(const AUUID& node_uuid, const std::string& label);
 
-    CommandPtr createVariadicPort(const AUUID& node_uuid, ConnectorType port_type, TokenDataConstPtr connection_type, const std::string& label);
-    CommandPtr createVariadicPort(const AUUID& node_uuid, ConnectorType port_type, TokenDataConstPtr connection_type, const std::string& label, bool optional);
+    CommandPtr createVariadicPort(const AUUID& node_uuid, ConnectorType port_type, TokenTypeConstPtr connection_type, const std::string& label);
+    CommandPtr createVariadicPort(const AUUID& node_uuid, ConnectorType port_type, TokenTypeConstPtr connection_type, const std::string& label, bool optional);
 
     CommandPtr deleteThreadGroup(csapex::ThreadGroup* group);
 

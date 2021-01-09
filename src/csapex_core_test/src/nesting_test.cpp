@@ -3,6 +3,7 @@
 #include <csapex/model/graph/graph_impl.h>
 #include <csapex/model/connector.h>
 #include <csapex/core/graphio.h>
+#include <csapex/model/connector.h>
 #include <csapex_testing/mockup_nodes.h>
 #include <csapex_testing/stepping_test.h>
 
@@ -26,7 +27,7 @@ TEST_F(NestingTest, InternalGraphPortsCanBeFound)
     main_graph_facade.addNode(sub_graph_node_facade);
 
     SubgraphNodePtr sub_graph_node = sub_graph_facade.getSubgraphNode();
-    TokenDataConstPtr type(new connection_types::AnyMessage);
+    TokenTypeConstPtr type(new connection_types::AnyMessage);
     sub_graph_node->addForwardingOutput(type, "relay");
     sub_graph_node->addForwardingInput(type, "relay", false);
     sub_graph_node->addForwardingSlot(type, "relay");

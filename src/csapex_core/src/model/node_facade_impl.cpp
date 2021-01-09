@@ -339,7 +339,7 @@ ConnectorPtr NodeFacadeImplementation::getConnectorNoThrow(const UUID& id) const
 NodeCharacteristics NodeFacadeImplementation::getNodeCharacteristics() const
 {
     auto vertex = nh_->getVertex();
-    if(!vertex) {
+    if (!vertex) {
         return {};
     }
     return vertex->getNodeCharacteristics();

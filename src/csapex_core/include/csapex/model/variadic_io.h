@@ -15,10 +15,10 @@ class CSAPEX_CORE_EXPORT VariadicBase
 public:
     ~VariadicBase();
 
-    virtual Connectable* createVariadicPort(ConnectorType port_type, TokenDataConstPtr type, const std::string& label, bool optional) = 0;
+    virtual Connectable* createVariadicPort(ConnectorType port_type, TokenTypeConstPtr type, const std::string& label, bool optional) = 0;
 
 protected:
-    VariadicBase(TokenDataConstPtr type);
+    VariadicBase(TokenTypeConstPtr type);
     VariadicBase();
 
     void setupVariadic(csapex::NodeModifier& node_modifier);
@@ -27,24 +27,24 @@ protected:
     virtual void portCountChanged();
 
 protected:
-    TokenDataConstPtr variadic_type_;
+    TokenTypeConstPtr variadic_type_;
     csapex::NodeModifier* variadic_modifier_;
 };
 
 class CSAPEX_CORE_EXPORT VariadicInputs : public virtual VariadicBase
 {
 public:
-    virtual Input* createVariadicInput(TokenDataConstPtr type, const std::string& label, bool optional);
+    virtual Input* createVariadicInput(TokenTypeConstPtr type, const std::string& label, bool optional);
     virtual void removeVariadicInput(InputPtr input);
     void removeVariadicInputById(const UUID& input);
-    Connectable* createVariadicPort(ConnectorType port_type, TokenDataConstPtr type, const std::string& label, bool optional) override;
+    Connectable* createVariadicPort(ConnectorType port_type, TokenTypeConstPtr type, const std::string& label, bool optional) override;
 
     int getVariadicInputCount() const;
 
     InputPtr getVariadicInput(std::size_t index);
 
 protected:
-    VariadicInputs(TokenDataConstPtr type);
+    VariadicInputs(TokenTypeConstPtr type);
     VariadicInputs();
 
     void setupVariadicParameters(Parameterizable& parameters) override;
@@ -63,15 +63,15 @@ protected:
 class CSAPEX_CORE_EXPORT VariadicOutputs : public virtual VariadicBase
 {
 public:
-    virtual Output* createVariadicOutput(TokenDataConstPtr type, const std::string& label);
+    virtual Output* createVariadicOutput(TokenTypeConstPtr type, const std::string& label);
     virtual void removeVariadicOutput(OutputPtr output);
     void removeVariadicOutputById(const UUID& output);
-    Connectable* createVariadicPort(ConnectorType port_type, TokenDataConstPtr type, const std::string& label, bool optional) override;
+    Connectable* createVariadicPort(ConnectorType port_type, TokenTypeConstPtr type, const std::string& label, bool optional) override;
 
     int getVariadicOutputCount() const;
 
 protected:
-    VariadicOutputs(TokenDataConstPtr type);
+    VariadicOutputs(TokenTypeConstPtr type);
     VariadicOutputs();
 
     void setupVariadicParameters(Parameterizable& parameters) override;
@@ -92,15 +92,15 @@ protected:
 class CSAPEX_CORE_EXPORT VariadicEvents : public virtual VariadicBase
 {
 public:
-    virtual Event* createVariadicEvent(TokenDataConstPtr type, const std::string& label);
+    virtual Event* createVariadicEvent(TokenTypeConstPtr type, const std::string& label);
     virtual void removeVariadicEvent(EventPtr trigger);
     void removeVariadicEventById(const UUID& trigger);
-    Connectable* createVariadicPort(ConnectorType port_type, TokenDataConstPtr type, const std::string& label, bool optional) override;
+    Connectable* createVariadicPort(ConnectorType port_type, TokenTypeConstPtr type, const std::string& label, bool optional) override;
 
     int getVariadicEventCount() const;
 
 protected:
-    VariadicEvents(TokenDataConstPtr type);
+    VariadicEvents(TokenTypeConstPtr type);
     VariadicEvents();
 
     void setupVariadicParameters(Parameterizable& parameters) override;
@@ -121,22 +121,22 @@ protected:
 class CSAPEX_CORE_EXPORT VariadicSlots : public virtual VariadicBase
 {
 public:
-    virtual Slot* createVariadicSlot(TokenDataConstPtr type, const std::string& label, std::function<void(Slot* slot, const TokenPtr&)> callback, bool active = false, bool blocking = true);
+    virtual Slot* createVariadicSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(Slot* slot, const TokenPtr&)> callback, bool active = false, bool blocking = true);
 
-    virtual Slot* createVariadicSlot(TokenDataConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active = false, bool blocking = true);
+    virtual Slot* createVariadicSlot(TokenTypeConstPtr type, const std::string& label, std::function<void(const TokenPtr&)> callback, bool active = false, bool blocking = true);
 
     virtual void removeVariadicSlot(SlotPtr slot);
 
     void removeVariadicSlotById(const UUID& slot);
 
-    Connectable* createVariadicPort(ConnectorType port_type, TokenDataConstPtr type, const std::string& label, bool optional) override;
+    Connectable* createVariadicPort(ConnectorType port_type, TokenTypeConstPtr type, const std::string& label, bool optional) override;
 
     int getVariadicSlotCount() const;
 
     SlotPtr getVariadicSlot(std::size_t index);
 
 protected:
-    VariadicSlots(TokenDataConstPtr type);
+    VariadicSlots(TokenTypeConstPtr type);
     VariadicSlots();
 
     void setupVariadicParameters(Parameterizable& parameters) override;
@@ -156,25 +156,25 @@ protected:
 class CSAPEX_CORE_EXPORT VariadicIO : public VariadicInputs, public VariadicOutputs
 {
 public:
-    Connectable* createVariadicPort(ConnectorType port_type, TokenDataConstPtr type, const std::string& label, bool optional) override;
+    Connectable* createVariadicPort(ConnectorType port_type, TokenTypeConstPtr type, const std::string& label, bool optional) override;
 
 protected:
-    VariadicIO(TokenDataConstPtr type);
+    VariadicIO(TokenTypeConstPtr type);
     VariadicIO();
 
-    void setupVariadicParameters(Parameterizable& parameters) final ;
+    void setupVariadicParameters(Parameterizable& parameters) final;
 };
 
 class CSAPEX_CORE_EXPORT Variadic : public VariadicInputs, public VariadicOutputs, public VariadicEvents, public VariadicSlots
 {
 public:
-    Connectable* createVariadicPort(ConnectorType port_type, TokenDataConstPtr type, const std::string& label, bool optional) override;
+    Connectable* createVariadicPort(ConnectorType port_type, TokenTypeConstPtr type, const std::string& label, bool optional) override;
 
 protected:
-    Variadic(TokenDataConstPtr type);
+    Variadic(TokenTypeConstPtr type);
     Variadic();
 
-    void setupVariadicParameters(Parameterizable& parameters) final ;
+    void setupVariadicParameters(Parameterizable& parameters) final;
 };
 }  // namespace csapex
 

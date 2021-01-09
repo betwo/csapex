@@ -9,7 +9,7 @@
 
 using namespace csapex;
 
-ConnectionDescription::ConnectionDescription(const UUID& from, const UUID& to, const TokenDataConstPtr& type, int id, int seq, bool active, const std::vector<Fulcrum>& fulcrums)
+ConnectionDescription::ConnectionDescription(const UUID& from, const UUID& to, const TokenTypeConstPtr& type, int id, int seq, bool active, const std::vector<Fulcrum>& fulcrums)
   : from(from), to(to), from_label(""), to_label(""), type(type), id(id), seq(seq), active(active), fulcrums(fulcrums)
 {
 }

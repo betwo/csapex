@@ -156,6 +156,39 @@ std::shared_ptr<typename Container::template TypeMap<R>::type const> getMessage(
 }
 
 template <typename R>
+std::shared_ptr<R const> getOptionalMessage(Input* input, typename std::enable_if<std::is_base_of<TokenData, R>::value>::type* /*dummy*/ = 0)
+{
+    const auto& msg = getMessage(input);
+    typename std::shared_ptr<R const> result = message_cast<R const>(msg);
+    if (!result) {
+        return nullptr;
+    }
+    return result;
+}
+
+template <typename R>
+std::shared_ptr<R const> getOptionalMessage(Input* input, typename std::enable_if<!std::is_base_of<TokenData, R>::value>::type* /*dummy*/ = 0)
+{
+    const auto& msg = getMessage(input);
+    auto result = message_cast<connection_types::GenericPointerMessage<R> const>(msg);
+    if (!result) {
+        return nullptr;
+    }
+    return result->value;
+}
+
+template <typename Container, typename R>
+std::shared_ptr<typename Container::template TypeMap<R>::type const> getOptionalMessage(Input* input)
+{
+    const auto& msg = getMessage(input);
+    typename std::shared_ptr<Container const> result = message_cast<Container const>(msg);
+    if (!result) {
+        return nullptr;
+    }
+    return result->template makeShared<R>();
+}
+
+template <typename R>
 std::shared_ptr<R> getClonedMessage(Input* input)
 {
     const auto& msg = getMessage<R>(input);
