@@ -248,7 +248,7 @@ TEST_F(ContainerIterationTest, VectorCanBeIteratedInSubGraph)
     auto type = connection_types::GenericVectorMessage::make<int>();
 
     auto in_vec_map = sub_graph->addForwardingInput(type, "forwarding_vector", false);
-    auto in_const_map = sub_graph->addForwardingInput(makeEmpty<connection_types::GenericValueMessage<int>>(), "forwarding_const", false);
+    auto in_const_map = sub_graph->addForwardingInput(connection_types::makeTokenType<connection_types::GenericValueMessage<int>>(), "forwarding_const", false);
     auto out_map = sub_graph->addForwardingOutput(type, "forwarding");
 
     ConnectorPtr n2_out = n2->getConnector(UUIDProvider::makeUUID_without_parent(std::string("n2") + UUID::namespace_separator + "out_0"));
@@ -383,7 +383,7 @@ TEST_F(ContainerIterationTest, VectorCanBeForwardedAndIteratedInSubGraph)
     auto type = connection_types::GenericVectorMessage::make<int>();
 
     auto in_vec_map = sub_graph->addForwardingInput(type, "forwarding_vector", false);
-    auto in_const_map = sub_graph->addForwardingInput(makeEmpty<connection_types::GenericValueMessage<int>>(), "forwarding_const", false);
+    auto in_const_map = sub_graph->addForwardingInput(connection_types::makeTokenType<connection_types::GenericValueMessage<int>>(), "forwarding_const", false);
     auto out_map = sub_graph->addForwardingOutput(type, "forwarding");
 
     sub_graph->setIterationEnabled(in_vec_map.external, true);

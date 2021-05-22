@@ -112,7 +112,7 @@ void Connectable::stop()
 
 void Connectable::init()
 {
-    setType(makeEmpty<connection_types::AnyMessage>());
+    setType(connection_types::makeTokenType<connection_types::AnyMessage>());
 }
 
 Connectable::~Connectable()

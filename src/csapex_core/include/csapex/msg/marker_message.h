@@ -3,6 +3,7 @@
 
 /// COMPONENT
 #include <csapex/msg/message.h>
+#include <csapex_core/csapex_core_export.h>
 
 namespace csapex
 {
@@ -15,17 +16,27 @@ public:
 
 protected:
     MarkerMessage(const std::string& name, Stamp stamp);
-
-public:
-    bool canConnectTo(const TokenType* other_side) const override;
-    bool acceptsConnectionFrom(const TokenType* other_side) const override;
 };
+
 template <>
 struct type<MarkerMessage>
 {
     static std::string name()
     {
         return "Marker";
+    }
+
+    static TokenTypePtr makeTokenType()
+    {
+        return std::make_shared<TokenType>(
+            // acceptor
+            [](const TokenType& left, const TokenType& right) { return true; },
+            // connector
+            [](const TokenType& left, const TokenType& right) { return true; },
+            // name
+            type2name(typeid(MarkerMessage)),
+            // description
+            type<MarkerMessage>::name());
     }
 };
 

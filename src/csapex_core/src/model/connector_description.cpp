@@ -25,7 +25,7 @@ ConnectorDescription::ConnectorDescription(const AUUID& owner, ConnectorType con
   , optional(false)
   , is_parameter(false)
   , is_variadic(false)
-  , token_type(makeEmpty<connection_types::AnyMessage>())
+  , token_type(connection_types::makeTokenType<connection_types::AnyMessage>())
   , id(UUID::NONE)
   , valid(true)
 {

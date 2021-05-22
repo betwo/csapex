@@ -314,7 +314,7 @@ void NodeHandle::makeParameterConnectableTyped(csapex::param::ParameterPtr param
 
     {
         InputPtr cin = std::make_shared<Input>(uuid_provider->makeDerivedUUID(getUUID(), std::string("in_") + p->name()), shared_from_this());
-        cin->setType(makeEmpty<T>());
+        cin->setType(connection_types::makeTokenType<T>());
         cin->setOptional(true);
         cin->setLabel(p->name());
         cin->setParameter(true);
@@ -326,7 +326,7 @@ void NodeHandle::makeParameterConnectableTyped(csapex::param::ParameterPtr param
     }
     {
         OutputPtr cout = std::make_shared<StaticOutput>(uuid_provider->makeDerivedUUID(getUUID(), std::string("out_") + p->name()), shared_from_this());
-        cout->setType(makeEmpty<T>());
+        cout->setType(connection_types::makeTokenType<T>());
         cout->setLabel(p->name());
         cout->setParameter(true);
 

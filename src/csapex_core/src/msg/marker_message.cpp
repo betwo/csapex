@@ -4,16 +4,6 @@
 using namespace csapex;
 using namespace connection_types;
 
-MarkerMessage::MarkerMessage(const std::string& name, Stamp stamp) : Message(name, "/", stamp)
+MarkerMessage::MarkerMessage(const std::string& name, Stamp stamp) : Message(makeTokenType<MarkerMessage>(), "/", stamp)
 {
-}
-
-bool MarkerMessage::canConnectTo(const TokenType*) const
-{
-    return true;
-}
-
-bool MarkerMessage::acceptsConnectionFrom(const TokenType*) const
-{
-    return true;
 }

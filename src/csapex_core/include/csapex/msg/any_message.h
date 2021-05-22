@@ -21,9 +21,6 @@ public:
     AnyMessage();
 
 public:
-    bool canConnectTo(const TokenType* other_side) const override;
-    bool acceptsConnectionFrom(const TokenType* other_side) const override;
-
     void serialize(SerializationBuffer& data, SemanticVersion& version) const override;
     void deserialize(const SerializationBuffer& data, const SemanticVersion& version) override;
 };
@@ -34,6 +31,19 @@ struct type<AnyMessage>
     static std::string name()
     {
         return "Anything";
+    }
+
+    static TokenTypePtr makeTokenType()
+    {
+        return std::make_shared<TokenType>(
+            // acceptor
+            [](const TokenType& left, const TokenType& right) { return true; },
+            // connector
+            [](const TokenType& left, const TokenType& right) { return true; },
+            // name
+            type2name(typeid(AnyMessage)),
+            // description
+            type<AnyMessage>::name());
     }
 };
 

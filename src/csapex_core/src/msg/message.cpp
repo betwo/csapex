@@ -8,7 +8,7 @@
 using namespace csapex;
 using namespace connection_types;
 
-Message::Message(const std::string& name, const std::string& frame_id, Stamp stamp) : TokenData(name), frame_id(frame_id), stamp_micro_seconds(stamp)
+Message::Message(const TokenTypePtr& type, const std::string& frame_id, Stamp stamp) : TokenData(type), frame_id(frame_id), stamp_micro_seconds(stamp)
 {
     if (frame_id.size() > 0 && frame_id.at(0) == '/') {
         this->frame_id = frame_id.substr(1);

@@ -5,6 +5,7 @@
 #include <csapex_core/csapex_core_export.h>
 #include <csapex/serialization/streamable.h>
 #include <csapex/model/token_type.h>
+#include <csapex/model/model_fwd.h>
 
 /// SYSTEM
 #include <memory>
@@ -12,7 +13,7 @@
 
 namespace csapex
 {
-class CSAPEX_CORE_EXPORT TokenData : public TokenType
+class CSAPEX_CORE_EXPORT TokenData : public Streamable
 {
 public:
     static const uint8_t PACKET_TYPE_ID = 8;
@@ -21,11 +22,13 @@ public:
     typedef std::shared_ptr<const TokenData> ConstPtr;
 
 public:
-    TokenData(const std::string& type_name);
-    TokenData(const std::string& type_name, const std::string& descriptive_name);
+    TokenData(TokenTypePtr type);
     ~TokenData() override;
 
-    std::shared_ptr<TokenType> toType() const;
+    std::shared_ptr<TokenType> getType() const;
+
+    std::string typeName() const;
+    std::string descriptiveName() const;
 
     virtual bool isValid() const;
 
@@ -39,6 +42,9 @@ public:
 
 protected:
     TokenData();
+
+private:
+    TokenTypePtr type_;
 };
 
 }  // namespace csapex

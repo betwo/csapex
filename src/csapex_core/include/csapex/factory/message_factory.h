@@ -29,7 +29,8 @@ class CSAPEX_CORE_EXPORT MessageFactory : public Singleton<MessageFactory>
     friend class Singleton<MessageFactory>;
 
 public:
-    typedef std::function<TokenData::Ptr()> Constructor;
+    typedef std::function<TokenData::Ptr()> MessageConstructor;
+    typedef std::function<TokenType::Ptr()> TokenTypeConstructor;
 
 public:
     bool isMessageRegistered(const std::string& type) const;
@@ -42,10 +43,16 @@ public:
     template <template <typename> class Wrapper, typename M>
     static TokenData::Ptr createDirectMessage()
     {
-        return makeEmpty<Wrapper<M> >();
+        return makeEmpty<Wrapper<M>>();
+    }
+    template <typename M>
+    static TokenType::Ptr createTokenType()
+    {
+        return connection_types::makeTokenType<M>();
     }
 
     static TokenData::Ptr createMessage(const std::string& type);
+    static TokenType::Ptr createMessageType(const std::string& type);
 
     static TokenData::Ptr readFile(const std::string& path);
     static int writeFile(const std::string& path, const std::string& base, const int suffix, const TokenData& msg, serialization::Format format);
@@ -63,9 +70,9 @@ public:
     static void registerDirectMessage()
     {
         MessageFactory& instance = MessageFactory::instance();
-        std::string type = connection_types::serializationName<Wrapper<M> >();
+        std::string type = connection_types::serializationName<Wrapper<M>>();
         if (!instance.isMessageRegistered(type)) {
-            instance.registerMessage(type, std::type_index(typeid(Wrapper<M>)), std::bind(&MessageFactory::createDirectMessage<Wrapper, M>));
+            instance.registerMessage(type, std::type_index(typeid(Wrapper<M>)), std::bind(&MessageFactory::createDirectMessage<Wrapper, M>), std::bind(&MessageFactory::createTokenType<Wrapper<M>>));
         }
     }
 
@@ -73,14 +80,15 @@ public:
     static void deregisterDirectMessage()
     {
         MessageFactory& instance = MessageFactory::instance();
-        std::string type = connection_types::serializationName<Wrapper<M> >();
+        std::string type = connection_types::serializationName<Wrapper<M>>();
         instance.deregisterMessage(type);
     }
 
     template <typename M>
     static void registerMessage()
     {
-        MessageFactory::instance().registerMessage(connection_types::serializationName<M>(), std::type_index(typeid(M)), std::bind(&MessageFactory::createMessage<M>));
+        MessageFactory::instance().registerMessage(connection_types::serializationName<M>(), std::type_index(typeid(M)), std::bind(&MessageFactory::createMessage<M>),
+                                                   std::bind(&MessageFactory::createTokenType<M>));
     }
     template <typename M>
     static void deregisterMessage()
@@ -92,12 +100,13 @@ private:
     MessageFactory();
     ~MessageFactory() override;
 
-    static void registerMessage(std::string type, std::type_index typeindex, Constructor constructor);
+    static void registerMessage(std::string type, std::type_index typeindex, MessageConstructor msg_constructor, TokenTypeConstructor type_constructor);
     static void deregisterMessage(std::string type);
 
 private:
-    std::map<std::string, Constructor> type_to_constructor;
-    std::map<std::string, std::type_index> type_to_type_index;
+    std::map<std::string, MessageConstructor> typename_to_message_constructor;
+    std::map<std::string, TokenTypeConstructor> typename_to_token_type_constructor;
+    std::map<std::string, std::type_index> typename_to_type_index;
 };
 
 template <typename T>

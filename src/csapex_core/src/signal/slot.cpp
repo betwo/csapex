@@ -18,18 +18,18 @@ using namespace csapex;
 Slot::Slot(std::function<void()> callback, const UUID& uuid, bool active, bool blocking, ConnectableOwnerWeakPtr owner)
   : Input(uuid, owner), callback_([callback](Slot*, const TokenPtr&) { callback(); }), active_(active), blocking_(blocking), guard_(-1)
 {
-    setType(makeEmpty<connection_types::AnyMessage>());
+    setType(connection_types::makeTokenType<connection_types::AnyMessage>());
 }
 Slot::Slot(std::function<void(const TokenPtr&)> callback, const UUID& uuid, bool active, bool blocking, ConnectableOwnerWeakPtr owner)
   : Input(uuid, owner), callback_([callback](Slot*, const TokenPtr& token) { callback(token); }), active_(active), blocking_(blocking), guard_(-1)
 {
-    setType(makeEmpty<connection_types::AnyMessage>());
+    setType(connection_types::makeTokenType<connection_types::AnyMessage>());
 }
 
 Slot::Slot(std::function<void(Slot*, const TokenPtr&)> callback, const UUID& uuid, bool active, bool blocking, ConnectableOwnerWeakPtr owner)
   : Input(uuid, owner), callback_(callback), active_(active), blocking_(blocking), guard_(-1)
 {
-    setType(makeEmpty<connection_types::AnyMessage>());
+    setType(connection_types::makeTokenType<connection_types::AnyMessage>());
 }
 
 Slot::~Slot()
@@ -63,7 +63,7 @@ void Slot::disable()
 
 void Slot::setToken(TokenPtr token)
 {
-    apex_assert_hard(getType()->canConnectTo(token->getTokenData().get()));
+    apex_assert_hard(getType()->canConnectTo(token->getTokenType().get()));
 
     //    Input::setToken(token);
 

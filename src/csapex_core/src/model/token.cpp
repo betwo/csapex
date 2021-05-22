@@ -31,6 +31,11 @@ TokenDataConstPtr Token::getTokenData() const
     return data_;
 }
 
+TokenTypeConstPtr Token::getTokenType() const
+{
+    return data_->getType();
+}
+
 int Token::getSequenceNumber() const
 {
     return seq_no_;

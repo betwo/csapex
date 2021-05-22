@@ -12,28 +12,28 @@ CSAPEX_REGISTER_MESSAGE_WITH_NAME(csapex::connection_types::GenericVectorMessage
 using namespace csapex;
 using namespace connection_types;
 
-GenericVectorMessage::GenericVectorMessage(EntryInterface::Ptr pimpl, const std::string& frame_id, Message::Stamp stamp) : Message(type<GenericVectorMessage>::name(), frame_id, stamp), pimpl(pimpl)
+GenericVectorMessage::GenericVectorMessage(EntryInterface::Ptr pimpl, const std::string& frame_id, Message::Stamp stamp) : Message(pimpl->getType(), frame_id, stamp), pimpl(pimpl)
 {
 }
 
-GenericVectorMessage::GenericVectorMessage() : Message(type<GenericVectorMessage>::name(), "/", 0), pimpl(std::make_shared<InstancedImplementation>(std::make_shared<AnyMessage>()))
+GenericVectorMessage::GenericVectorMessage() : Message(type<GenericVectorMessage>::makeTokenType(), "/", 0), pimpl(std::make_shared<InstancedImplementation>(type<AnyMessage>::makeTokenType()))
 {
 }
 
-bool GenericVectorMessage::canConnectTo(const TokenType* other_side) const
-{
-    return pimpl->canConnectTo(other_side);
-}
+// bool GenericVectorMessage::canConnectTo(const TokenType* other_side) const
+// {
+//     return pimpl->canConnectTo(other_side);
+// }
 
-bool GenericVectorMessage::acceptsConnectionFrom(const TokenType* other_side) const
-{
-    return pimpl->acceptsConnectionFrom(other_side);
-}
+// bool GenericVectorMessage::acceptsConnectionFrom(const TokenType* other_side) const
+// {
+//     return pimpl->acceptsConnectionFrom(other_side);
+// }
 
-std::string GenericVectorMessage::descriptiveName() const
-{
-    return pimpl->descriptiveName();
-}
+// std::string GenericVectorMessage::descriptiveName() const
+// {
+//     return pimpl->descriptiveName();
+// }
 
 /// ANYTHING
 
@@ -48,36 +48,36 @@ void GenericVectorMessage::AnythingImplementation::decode(const YAML::Node& node
 {
 }
 
-bool GenericVectorMessage::AnythingImplementation::canConnectTo(const TokenType* other_side) const
-{
-    if (dynamic_cast<const EntryInterface*>(other_side)) {
-        return true;
-    } else if (dynamic_cast<const GenericVectorMessage*>(other_side)) {
-        return true;
-    } else {
-        auto type = toType();
-        return other_side->canConnectTo(type.get());
-    }
-}
+// bool GenericVectorMessage::AnythingImplementation::canConnectTo(const TokenType* other_side) const
+// {
+//     if (dynamic_cast<const EntryInterface*>(other_side)) {
+//         return true;
+//     } else if (dynamic_cast<const GenericVectorMessage*>(other_side)) {
+//         return true;
+//     } else {
+//         auto type = getType();
+//         return other_side->canConnectTo(type.get());
+//     }
+// }
 
-bool GenericVectorMessage::AnythingImplementation::acceptsConnectionFrom(const TokenType* other_side) const
-{
-    if (dynamic_cast<const EntryInterface*>(other_side)) {
-        return true;
-    } else if (dynamic_cast<const GenericVectorMessage*>(other_side)) {
-        return true;
-    } else {
-        return dynamic_cast<const AnyMessage*>(other_side) != nullptr;
-    }
-}
+// bool GenericVectorMessage::AnythingImplementation::acceptsConnectionFrom(const TokenType* other_side) const
+// {
+//     if (dynamic_cast<const EntryInterface*>(other_side)) {
+//         return true;
+//     } else if (dynamic_cast<const GenericVectorMessage*>(other_side)) {
+//         return true;
+//     } else {
+//         return dynamic_cast<const AnyMessage*>(other_side) != nullptr;
+//     }
+// }
 
 void GenericVectorMessage::AnythingImplementation::serialize(SerializationBuffer& data, SemanticVersion& version) const
 {
-    Message::serialize(data, version);
+    EntryInterface::serialize(data, version);
 }
 void GenericVectorMessage::AnythingImplementation::deserialize(const SerializationBuffer& data, const SemanticVersion& version)
 {
-    Message::deserialize(data, version);
+    EntryInterface::deserialize(data, version);
 }
 
 // INSTANCED
@@ -87,7 +87,7 @@ GenericVectorMessage::InstancedImplementation::InstancedImplementation(TokenType
     apex_assert_hard(type_);
 }
 
-GenericVectorMessage::InstancedImplementation::InstancedImplementation() : EntryInterface("Anything"), type_(new AnyMessage)
+GenericVectorMessage::InstancedImplementation::InstancedImplementation() : EntryInterface("Anything"), type_(type<AnyMessage>::makeTokenType())
 {
     apex_assert_hard(type_);
 }
@@ -102,30 +102,30 @@ bool GenericVectorMessage::InstancedImplementation::cloneData(const GenericVecto
     return true;
 }
 
-bool GenericVectorMessage::InstancedImplementation::canConnectTo(const TokenType* other_side) const
-{
-    if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
-        return nestedType()->canConnectTo(ei->nestedType().get());
-    } else {
-        const GenericVectorMessage* vec = dynamic_cast<const GenericVectorMessage*>(other_side);
-        if (vec != 0) {
-            return vec->canConnectTo(this);
-        } else {
-            auto type = nestedType();
-            return other_side->canConnectTo(type.get());
-            // return dynamic_cast<const AnyMessage*> (other_side) != nullptr;
-        }
-    }
-}
+// bool GenericVectorMessage::InstancedImplementation::canConnectTo(const TokenType* other_side) const
+// {
+//     if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
+//         return nestedType()->canConnectTo(ei->nestedType().get());
+//     } else {
+//         const GenericVectorMessage* vec = dynamic_cast<const GenericVectorMessage*>(other_side);
+//         if (vec != 0) {
+//             return vec->canConnectTo(this);
+//         } else {
+//             auto type = nestedType();
+//             return other_side->canConnectTo(type.get());
+//             // return dynamic_cast<const AnyMessage*> (other_side) != nullptr;
+//         }
+//     }
+// }
 
-bool GenericVectorMessage::InstancedImplementation::acceptsConnectionFrom(const TokenType* other_side) const
-{
-    if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
-        return nestedType()->canConnectTo(ei->nestedType().get());
-    } else {
-        return false;
-    }
-}
+// bool GenericVectorMessage::InstancedImplementation::acceptsConnectionFrom(const TokenType* other_side) const
+// {
+//     if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
+//         return nestedType()->canConnectTo(ei->nestedType().get());
+//     } else {
+//         return false;
+//     }
+// }
 
 void GenericVectorMessage::InstancedImplementation::encode(YAML::Node& node) const
 {
@@ -141,11 +141,11 @@ void GenericVectorMessage::InstancedImplementation::decode(const YAML::Node& nod
     value = node["values"].as<std::vector<TokenData::Ptr> >();
 }
 
-TokenType::Ptr GenericVectorMessage::InstancedImplementation::nestedType() const
-{
-    apex_assert_hard(type_);
-    return type_->cloneAs<TokenData>();
-}
+// TokenType::Ptr GenericVectorMessage::InstancedImplementation::nestedType() const
+// {
+//     apex_assert_hard(type_);
+//     return type_->cloneAs<TokenData>();
+// }
 
 void GenericVectorMessage::InstancedImplementation::addNestedValue(const TokenData::ConstPtr& msg)
 {

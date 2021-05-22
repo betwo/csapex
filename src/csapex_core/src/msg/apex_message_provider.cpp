@@ -48,7 +48,7 @@ connection_types::Message::Ptr ApexMessageProvider::next(std::size_t /*slot*/)
 
 std::string ApexMessageProvider::getLabel(std::size_t /*slot*/) const
 {
-    return msg_->toType()->descriptiveName();
+    return msg_->getType()->descriptiveName();
 }
 
 std::vector<std::string> ApexMessageProvider::getExtensions() const

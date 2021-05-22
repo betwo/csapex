@@ -24,7 +24,7 @@ public:
     void deserialize(const SerializationBuffer& data, const SemanticVersion& version) override;
 
 protected:
-    Message(const std::string& name, const std::string& frame_id, Stamp stamp_micro_seconds);
+    Message(const TokenTypePtr& type, const std::string& frame_id, Stamp stamp_micro_seconds);
     ~Message() override;
 
     bool cloneDataFrom(const Clonable& other) override;

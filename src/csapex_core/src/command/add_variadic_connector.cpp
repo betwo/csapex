@@ -172,7 +172,7 @@ void AddVariadicConnector::deserialize(const SerializationBuffer& data, const Se
     std::string type_name;
     data >> type_name;
 
-    token_type = MessageFactory::createMessage(type_name);
+    token_type = MessageFactory::createMessageType(type_name);
 
     data >> label_;
     data >> optional_;

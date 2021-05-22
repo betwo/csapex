@@ -46,13 +46,22 @@ public:
     {
     };
 
-private:
-    struct CSAPEX_CORE_EXPORT EntryInterface : public Message
+public:
+    struct CSAPEX_CORE_EXPORT EntryInterface : public TokenData
     {
         typedef std::shared_ptr<EntryInterface> Ptr;
 
-        EntryInterface(const std::string& name, Message::Stamp stamp = 0) : Message(name, "/", stamp)
+        EntryInterface(const TokenTypePtr& nested_type) : TokenData(makeVectorType(nested_type))
         {
+        }
+
+        TokenTypePtr makeVectorType(const TokenTypePtr& nested_type)
+        {
+            return std::make_shared<TokenType>(
+                // name
+                std::string("Vec<") + nested_type->typeName() + ">",
+                // description
+                std::string("std::vector<") + nested_type->descriptiveName() + ">");
         }
 
         virtual std::string nestedName() const = 0;
@@ -89,7 +98,7 @@ private:
         typedef std::shared_ptr<Self> Ptr;
 
     public:
-        Implementation() : EntryInterface(std::string("std::vector<") + type2nameWithoutNamespace(typeid(T)) + ">")
+        Implementation() : EntryInterface(connection_types::makeTokenType<T>())
         {
             static_assert(!std::is_same<T, void*>::value, "void* not allowed");
             value.reset(new std::vector<Payload>);
@@ -105,40 +114,6 @@ private:
             value.reset(new std::vector<Payload>);
             *value = *other.value;
             return true;
-        }
-
-        bool canConnectTo(const TokenType* other_side) const override
-        {
-            if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
-                return nestedType()->canConnectTo(ei->nestedType().get());
-            } else {
-                const GenericVectorMessage* vec = dynamic_cast<const GenericVectorMessage*>(other_side);
-                if (vec != nullptr) {
-                    // if the other side is a vector too, try if they are compatible
-                    return vec->canConnectTo(this);
-                } else {
-                    // the other side is not a vector
-                    // try if the nested type is compatible
-                    auto type = nestedType();
-                    bool nested_is_compatible = other_side->canConnectTo(type.get());
-                    if (nested_is_compatible) {
-                        // connectable via iteration
-                        return true;
-                    } else {
-                        // no iteration possible, default to asking
-                        return other_side->acceptsConnectionFrom(this);
-                    }
-                    // return dynamic_cast<const AnyMessage*> (other_side) != nullptr;
-                }
-            }
-        }
-        bool acceptsConnectionFrom(const TokenType* other_side) const override
-        {
-            if (const EntryInterface* ei = dynamic_cast<const EntryInterface*>(other_side)) {
-                return nestedType()->canConnectTo(ei->nestedType().get());
-            } else {
-                return false;
-            }
         }
 
         std::string nestedName() const override
@@ -159,10 +134,10 @@ private:
             *value = node["values"].as<std::vector<Payload>>();
         }
 
-        TokenType::Ptr nestedType() const override
-        {
-            return makeTypeSwitch(Tag<Payload>());
-        }
+        // TokenType::Ptr nestedType() const override
+        // {
+        //     return makeTypeSwitch(Tag<Payload>());
+        // }
 
         void addNestedValue(const TokenData::ConstPtr& msg) override
         {
@@ -250,7 +225,7 @@ private:
         template <typename MsgType>
         static TokenData::ConstPtr convertToken(const MsgType& val, typename std::enable_if<connection_types::should_use_pointer_message<MsgType>::value>::type* = 0)
         {
-            auto res = csapex::makeEmpty<connection_types::GenericPointerMessage<MsgType>>();
+            auto res = csapex::connection_types::makeTokenType<connection_types::GenericPointerMessage<MsgType>>();
             res->value = std::make_shared<MsgType>(val);
             return res;
         }
@@ -258,7 +233,7 @@ private:
         template <typename MsgType>
         static TokenData::ConstPtr convertToken(const std::shared_ptr<MsgType>& val, typename std::enable_if<connection_types::should_use_pointer_message<MsgType>::value>::type* = 0)
         {
-            auto res = csapex::makeEmpty<connection_types::GenericPointerMessage<MsgType>>();
+            auto res = csapex::connection_types::makeTokenType<connection_types::GenericPointerMessage<MsgType>>();
             res->value = val;
             return res;
         }
@@ -266,7 +241,7 @@ private:
         template <typename MsgType>
         static TokenData::ConstPtr convertToken(const MsgType& val, typename std::enable_if<connection_types::should_use_value_message<MsgType>::value>::type* = 0)
         {
-            auto res = csapex::makeEmpty<connection_types::GenericValueMessage<MsgType>>();
+            auto res = csapex::connection_types::makeTokenType<connection_types::GenericValueMessage<MsgType>>();
             res->value = val;
             return res;
         }
@@ -290,13 +265,13 @@ private:
         template <typename MsgType>
         static TokenData::Ptr makeTypeImpl(typename std::enable_if<connection_types::should_use_pointer_message<MsgType>::value>::type* = 0)
         {
-            return csapex::makeEmpty<connection_types::GenericPointerMessage<MsgType>>();
+            return csapex::connection_types::makeTokenType<connection_types::GenericPointerMessage<MsgType>>();
         }
 
         template <typename MsgType>
         static TokenData::Ptr makeTypeImpl(typename std::enable_if<connection_types::should_use_value_message<MsgType>::value>::type* = 0)
         {
-            return csapex::makeEmpty<connection_types::GenericValueMessage<MsgType>>();
+            return csapex::connection_types::makeTokenType<connection_types::GenericValueMessage<MsgType>>();
         }
 
         template <typename MsgType>
@@ -304,7 +279,18 @@ private:
         makeTypeImpl(typename std::enable_if<!connection_types::should_use_pointer_message<MsgType>::value && !connection_types::should_use_value_message<MsgType>::value>::type* = 0)
         {
             static_assert(std::is_base_of<TokenData, MsgType>::value, "message has to be derived from TokenData");
-            return csapex::makeEmpty<typename std::remove_const<MsgType>::type>();
+            return csapex::connection_types::makeTokenType<typename std::remove_const<MsgType>::type>();
+        }
+
+        void serialize(SerializationBuffer& data, SemanticVersion& version) const override
+        {
+            EntryInterface::serialize(data, version);
+            data << value;
+        }
+        void deserialize(const SerializationBuffer& data, const SemanticVersion& version) override
+        {
+            EntryInterface::deserialize(data, version);
+            data >> value;
         }
 
     public:
@@ -364,16 +350,16 @@ private:
             }
         }
 
-        void serialize(SerializationBuffer& data, SemanticVersion& version) const override
-        {
-            TokenData::serialize(data, version);
-            data << value;
-        }
-        void deserialize(const SerializationBuffer& data, const SemanticVersion& version) override
-        {
-            TokenData::deserialize(data, version);
-            data >> value;
-        }
+        // void serialize(SerializationBuffer& data, SemanticVersion& version) const override
+        // {
+        //     TokenData::serialize(data, version);
+        //     data << value;
+        // }
+        // void deserialize(const SerializationBuffer& data, const SemanticVersion& version) override
+        // {
+        //     TokenData::deserialize(data, version);
+        //     data >> value;
+        // }
     };
 
     struct CSAPEX_CORE_EXPORT AnythingImplementation : public EntryInterface
@@ -384,8 +370,8 @@ private:
     public:
         AnythingImplementation();
 
-        bool canConnectTo(const TokenType* other_side) const override;
-        bool acceptsConnectionFrom(const TokenType* other_side) const override;
+        // bool canConnectTo(const TokenType* other_side) const override;
+        // bool acceptsConnectionFrom(const TokenType* other_side) const override;
         void encode(YAML::Node& node) const override;
         void decode(const YAML::Node& node) override;
 
@@ -408,12 +394,12 @@ private:
     public:
         InstancedImplementation(TokenType::ConstPtr type);
 
-        bool canConnectTo(const TokenType* other_side) const override;
-        bool acceptsConnectionFrom(const TokenType* other_side) const override;
+        // bool canConnectTo(const TokenType* other_side) const override;
+        // bool acceptsConnectionFrom(const TokenType* other_side) const override;
         void encode(YAML::Node& node) const override;
         void decode(const YAML::Node& node) override;
 
-        TokenType::Ptr nestedType() const override;
+        // TokenType::Ptr nestedType() const override;
 
         void addNestedValue(const TokenData::ConstPtr& msg) override;
         TokenData::ConstPtr nestedValue(std::size_t i) const override;
@@ -557,14 +543,14 @@ public:
     }
 
     template <typename T>
-    static GenericVectorMessage::Ptr make(typename std::enable_if<std::is_base_of<TokenData, T>::value>::type* = 0)
+    static GenericVectorMessage::Ptr make(typename std::enable_if<std::is_base_of<TokenType, T>::value>::type* = 0)
     {
         registerType<T>();
         return GenericVectorMessage::Ptr(new GenericVectorMessage(MessageImplementation<T>::make(), "/", 0));
     }
 
     template <typename T>
-    static GenericVectorMessage::Ptr make(typename std::enable_if<!std::is_base_of<TokenData, T>::value && !std::is_same<T, Anything>::value>::type* = 0)
+    static GenericVectorMessage::Ptr make(typename std::enable_if<!std::is_base_of<TokenType, T>::value && !std::is_same<T, Anything>::value>::type* = 0)
     {
         registerType<T>();
         return GenericVectorMessage::Ptr(new GenericVectorMessage(Implementation<T>::make(), "/", 0));
@@ -576,13 +562,13 @@ public:
         return GenericVectorMessage::Ptr(new GenericVectorMessage(std::make_shared<AnythingImplementation>(), "/", 0));
     }
 
-    static GenericVectorMessage::Ptr make(TokenData::ConstPtr type)
+    static GenericVectorMessage::Ptr make(TokenType::ConstPtr type)
     {
         return GenericVectorMessage::Ptr(new GenericVectorMessage(std::make_shared<InstancedImplementation>(type), "/", 0));
     }
 
     template <typename T>
-    std::shared_ptr<std::vector<T> const> makeShared(typename std::enable_if<std::is_base_of<TokenData, T>::value>::type* = 0) const
+    std::shared_ptr<std::vector<T> const> makeShared(typename std::enable_if<std::is_base_of<TokenType, T>::value>::type* = 0) const
     {
         if (auto impl = std::dynamic_pointer_cast<Implementation<T>>(pimpl)) {
             return impl->value;
@@ -714,19 +700,19 @@ public:
         pimpl->decode(node);
     }
 
-    bool canConnectTo(const TokenType* other_side) const override;
-    bool acceptsConnectionFrom(const TokenType* other_side) const override;
+    // bool canConnectTo(const TokenType* other_side) const override;
+    // bool acceptsConnectionFrom(const TokenType* other_side) const override;
 
-    std::string descriptiveName() const override;
+    // std::string descriptiveName() const override;
 
-    bool isContainer() const override
-    {
-        return true;
-    }
-    TokenType::Ptr nestedType() const override
-    {
-        return pimpl->nestedType();
-    }
+    // bool isContainer() const override
+    // {
+    //     return true;
+    // }
+    // TokenType::Ptr nestedType() const override
+    // {
+    //     return pimpl->nestedType();
+    // }
 
     void addNestedValue(const TokenData::ConstPtr& msg) override
     {
@@ -778,7 +764,42 @@ struct type<GenericVectorMessage>
     {
         return "Vector";
     }
+
+    static TokenTypePtr makeTokenType()
+    {
+        return std::make_shared<TokenType>(
+            // acceptor
+            [](const TokenType& left, const TokenType& right) {
+                if (const GenericVectorMessage::EntryInterface* ei = dynamic_cast<const GenericVectorMessage::EntryInterface*>(&right)) {
+                    return left.nestedType()->canConnectTo(ei->getType().get());
+                } else {
+                    return false;
+                }
+            },
+            // connector
+            [](const TokenType& left, const TokenType& right) {
+                auto left_type = left.nestedType();
+                if (const GenericVectorMessage::EntryInterface* ei = dynamic_cast<const GenericVectorMessage::EntryInterface*>(&right)) {
+                    return left_type->canConnectTo(ei->getType().get());
+                } else {
+                    bool nested_is_compatible = right.canConnectTo(left_type.get());
+                    if (nested_is_compatible) {
+                        // connectable via iteration
+                        return true;
+                    } else {
+                        // no iteration possible, default to asking
+                        return right.acceptsConnectionFrom(&left);
+                    }
+                    // return dynamic_cast<const AnyMessage*> (right) != nullptr;
+                }
+            },
+            // name
+            type2name(typeid(GenericVectorMessage)),
+            // description
+            type<GenericVectorMessage>::name());
+    }
 };
+
 }  // namespace connection_types
 
 template <>

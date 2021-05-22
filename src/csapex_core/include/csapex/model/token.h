@@ -27,6 +27,7 @@ public:
     ActivityModifier getActivityModifier() const;
 
     TokenDataConstPtr getTokenData() const;
+    TokenTypeConstPtr getTokenType() const;
 
     int getSequenceNumber() const;
     void setSequenceNumber(int seq_no_) const;

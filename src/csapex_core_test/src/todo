@@ -1,0 +1,4 @@
+[x] split TokenData into TokenData + TokenType
+[x] derive TokenData from TokenType temporarily
+[ ] move non-data-dependent stuff to TokenType, forward methods from TokenData
+[ ] remove derivation, rename TokeData::toType() to TokenData::getType()

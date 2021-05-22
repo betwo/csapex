@@ -13,13 +13,29 @@
 
 using namespace csapex;
 
-TokenType::TokenType(const std::string& type_name) : type_name_(type_name)
+TokenType::TokenType(const std::string& type_name) : TokenType(type_name, type_name)
 {
-    setDescriptiveName(type_name);
 }
 
 TokenType::TokenType(const std::string& type_name, const std::string& descriptive_name) : type_name_(type_name), descriptive_name_(descriptive_name)
 {
+    connector_fn_ = [](const TokenType& left, const TokenType& right) { return right.canConnectTo(&left); };
+    acceptor_fn_ = [](const TokenType& left, const TokenType& right) { return left.typeName() == right.typeName(); };
+}
+
+TokenType::TokenType(std::function<bool(const TokenType&, const TokenType&)> acceptor_fn, const std::string& type_name, const std::string& descriptive_name)
+  : type_name_(type_name), descriptive_name_(descriptive_name)
+{
+    connector_fn_ = [](const TokenType& left, const TokenType& right) { return right.canConnectTo(&left); };
+    acceptor_fn_ = acceptor_fn;
+}
+
+TokenType::TokenType(std::function<bool(const TokenType&, const TokenType&)> acceptor_fn, std::function<bool(const TokenType&, const TokenType&)> connector_fn, const std::string& type_name,
+                     const std::string& descriptive_name)
+  : type_name_(type_name), descriptive_name_(descriptive_name)
+{
+    connector_fn_ = connector_fn;
+    acceptor_fn_ = acceptor_fn;
 }
 
 void TokenType::setDescriptiveName(const std::string& name)
@@ -29,12 +45,14 @@ void TokenType::setDescriptiveName(const std::string& name)
 
 bool TokenType::canConnectTo(const TokenType* other_side) const
 {
-    return other_side->acceptsConnectionFrom(this);
+    // return other_side->acceptsConnectionFrom(this);
+    return connector_fn_(*this, *other_side);
 }
 
 bool TokenType::acceptsConnectionFrom(const TokenType* other_side) const
 {
-    return type_name_ == other_side->typeName();
+    // return type_name_ == other_side->typeName();
+    return acceptor_fn_(*this, *other_side);
 }
 
 std::string TokenType::descriptiveName() const
@@ -55,6 +73,11 @@ bool TokenType::isContainer() const
 TokenType::Ptr TokenType::nestedType() const
 {
     throw std::logic_error("cannot get nested type for non-container messages");
+}
+
+uint8_t TokenType::getPacketType() const
+{
+    return PACKET_TYPE_ID;
 }
 
 void TokenType::serialize(SerializationBuffer& data, SemanticVersion& version) const

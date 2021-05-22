@@ -21,7 +21,7 @@ struct convertPtr
 
     static bool decode(const Node& node, std::shared_ptr<T>& rhs)
     {
-        rhs = csapex::makeEmpty<T>();
+        rhs = csapex::connection_types::makeTokenType<T>();
         return YAML::convert<T>::decode(node, *rhs);
     }
 };
@@ -36,7 +36,7 @@ struct convertConstPtr
 
     static bool decode(const Node& node, std::shared_ptr<T const>& rhs)
     {
-        auto tmp = csapex::makeEmpty<T>();
+        auto tmp = csapex::connection_types::makeTokenType<T>();
         auto res = YAML::convert<T>::decode(node, *tmp);
         rhs = tmp;
         return res;

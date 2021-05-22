@@ -206,7 +206,7 @@ private:
         template <typename U>
         void operator()(GenericOutput<U>)
         {
-            typename U::Ptr out(makeEmpty<U>());
+            typename U::Ptr out(connection_types::makeTokenType<U>());
             instance_->out_msg_[id] = out;
             ++id;
         }

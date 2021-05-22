@@ -27,7 +27,7 @@ public:
         static csapex::DirectMessageConstructorRegistered<connection_types::GenericPointerMessage, Type> reg_c;
         static csapex::DirectMessageSerializerRegistered<connection_types::GenericPointerMessage, Type> reg_s;
 
-        setDescriptiveName(type2name(typeid(Type)));
+        // setDescriptiveName(type2name(typeid(Type)));
     }
     GenericPointerMessage(const std::shared_ptr<Type>& ptr, const std::string& _frame_id = "/", Message::Stamp stamp = 0) : GenericPointerMessage(_frame_id, stamp)
     {

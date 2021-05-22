@@ -354,7 +354,7 @@ public:
     void deregisterParameterType(const std::string& type);
 
 private:
-    std::map<std::string, std::function<ParameterBuilder()>> type_to_constructor;
+    std::map<std::string, std::function<ParameterBuilder()>> typename_to_message_constructor;
 };
 
 }  // namespace factory

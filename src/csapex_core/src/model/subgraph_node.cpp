@@ -114,8 +114,8 @@ void SubgraphNode::setup(NodeModifier& modifier)
 {
     setupVariadic(modifier);
 
-    activation_event_ = createInternalEvent(makeEmpty<connection_types::AnyMessage>(), graph_->makeUUID("event_activation"), "activation");
-    deactivation_event_ = createInternalEvent(makeEmpty<connection_types::AnyMessage>(), graph_->makeUUID("event_deactivation"), "deactivation");
+    activation_event_ = createInternalEvent(connection_types::makeTokenType<connection_types::AnyMessage>(), graph_->makeUUID("event_activation"), "activation");
+    deactivation_event_ = createInternalEvent(connection_types::makeTokenType<connection_types::AnyMessage>(), graph_->makeUUID("event_deactivation"), "deactivation");
 }
 
 void SubgraphNode::activation()
@@ -202,7 +202,7 @@ void SubgraphNode::process(NodeModifier& node_modifier, Parameterizable& params,
             TokenDataConstPtr m = msg::getMessage(i.get());
             OutputPtr o = external_to_internal_outputs_.at(i->getUUID());
 
-            if (m->isContainer() && iterated_inputs_.find(i->getUUID()) != iterated_inputs_.end()) {
+            if (m->getType()->isContainer() && iterated_inputs_.find(i->getUUID()) != iterated_inputs_.end()) {
                 is_iterating_ = true;
                 iteration_count_ = m->nestedValueCount();
                 iteration_index_ = 1;
@@ -370,7 +370,7 @@ UUID SubgraphNode::addForwardingOutput(const UUID& internal_uuid, const TokenTyp
             if (is_iterating_) {
                 connection_types::GenericVectorMessage::Ptr vector;
                 if (!external_output->hasMessage()) {
-                    vector = connection_types::GenericVectorMessage::make(token->getTokenData());
+                    vector = connection_types::GenericVectorMessage::make(token->getTokenType());
                 } else {
                     auto collected = external_output->getAddedToken()->getTokenData()->cloneAs<TokenData>();
                     vector = std::dynamic_pointer_cast<connection_types::GenericVectorMessage>(collected);
@@ -379,7 +379,7 @@ UUID SubgraphNode::addForwardingOutput(const UUID& internal_uuid, const TokenTyp
                 vector->addNestedValue(token->getTokenData());
                 msg::publish(external_output.get(), vector);
 
-                external_output->setType(vector);
+                external_output->setType(vector->getType());
 
             } else {
                 msg::publish(external_output.get(), token->getTokenData());
@@ -398,7 +398,7 @@ UUID SubgraphNode::addForwardingOutput(const UUID& internal_uuid, const TokenTyp
 
 SlotPtr SubgraphNode::createInternalSlot(const TokenTypeConstPtr& type, const UUID& internal_uuid, const std::string& label, std::function<void(const TokenPtr&)> callback)
 {
-    SlotPtr slot = node_handle_->addInternalSlot(makeEmpty<connection_types::AnyMessage>(), internal_uuid, label, callback);
+    SlotPtr slot = node_handle_->addInternalSlot(connection_types::makeTokenType<connection_types::AnyMessage>(), internal_uuid, label, callback);
     slot->setGraphPort(true);
     slot->setEssential(true);
 
@@ -676,7 +676,7 @@ void SubgraphNode::setIterationEnabled(const UUID& external_input_uuid, bool ena
             original_types_[id] = type;
 
             if (auto vector = std::dynamic_pointer_cast<const connection_types::GenericVectorMessage>(type)) {
-                i->setType(vector->nestedType());
+                i->setType(vector->getType()->nestedType());
             }
         }
 
@@ -803,7 +803,7 @@ void SubgraphNode::startNextIteration()
         TokenDataConstPtr m = msg::getMessage(i.get());
         OutputPtr o = external_to_internal_outputs_.at(i->getUUID());
 
-        if (m->isContainer() && iterated_inputs_.find(i->getUUID()) != iterated_inputs_.end()) {
+        if (m->getType()->isContainer() && iterated_inputs_.find(i->getUUID()) != iterated_inputs_.end()) {
             has_sent_current_iteration_ = false;
             msg::publish(o.get(), m->nestedValue(iteration_index_));
 

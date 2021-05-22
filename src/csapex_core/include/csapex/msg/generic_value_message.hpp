@@ -35,29 +35,11 @@ public:
     typedef std::shared_ptr<GenericValueMessage<Type> const> ConstPtr;
 
     explicit GenericValueMessage(const Type& _value = Type(), const std::string& _frame_id = "/", Message::Stamp stamp = 0)
-      : Message(type<GenericValueMessage<Type>>::name(), _frame_id, stamp), value(_value)
+      : Message(makeTokenType<GenericValueMessage<Type>>(), _frame_id, stamp), value(_value)
     {
         static_assert(should_use_value_message<Type>::value, "The type should not use a value message");
         static csapex::DirectMessageConstructorRegistered<connection_types::GenericValueMessage, Type> reg_c;
         static csapex::DirectMessageSerializerRegistered<connection_types::GenericValueMessage, Type> reg_s;
-    }
-
-    bool acceptsConnectionFrom(const TokenType* other_side) const override
-    {
-        if (dynamic_cast<const GenericValueMessage<Type>*>(other_side)) {
-            return true;
-        }
-
-        if (const ValueMessageBase* other_value = dynamic_cast<const ValueMessageBase*>(other_side)) {
-            if (isArithmetic() && other_value->isArithmetic()) {
-                return true;
-
-            } else if (std::is_base_of<std::string, Type>::value) {
-                // all messages can be converted to string
-                return true;
-            }
-        }
-        return descriptiveName() == other_side->descriptiveName();
     }
 
     Type getValue()
@@ -151,6 +133,33 @@ struct type<GenericValueMessage<T>>
     static std::string name()
     {
         return std::string("Value<") + type2name(typeid(T)) + ">";
+    }
+
+    static TokenTypePtr makeTokenType()
+    {
+        return std::make_shared<TokenType>(
+            // acceptor
+            [](const TokenType& left, const TokenType& right) {
+                return left.acceptsConnectionFrom(&right);
+                // if (dynamic_cast<const GenericValueMessage<T>*>(other_side)) {
+                //     return true;
+                // }
+
+                // if (const ValueMessageBase* other_value = dynamic_cast<const ValueMessageBase*>(other_side)) {
+                //     if (isArithmetic() && other_value->isArithmetic()) {
+                //         return true;
+
+                //     } else if (std::is_base_of<std::string, T>::value) {
+                //         // all messages can be converted to string
+                //         return true;
+                //     }
+                // }
+                // return descriptiveName() == other_side->descriptiveName();
+            },
+            // name
+            type2name(typeid(GenericValueMessage<T>)),
+            // description
+            type<GenericValueMessage<T>>::name());
     }
 };
 

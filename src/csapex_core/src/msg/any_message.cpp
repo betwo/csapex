@@ -9,18 +9,8 @@ CSAPEX_REGISTER_MESSAGE(csapex::connection_types::AnyMessage)
 using namespace csapex;
 using namespace connection_types;
 
-AnyMessage::AnyMessage() : Message(type<AnyMessage>::name(), "/", 0)
+AnyMessage::AnyMessage() : Message(makeTokenType<AnyMessage>(), "/", 0)
 {
-}
-
-bool AnyMessage::canConnectTo(const TokenType*) const
-{
-    return true;
-}
-
-bool AnyMessage::acceptsConnectionFrom(const TokenType*) const
-{
-    return true;
 }
 
 void AnyMessage::serialize(SerializationBuffer& data, SemanticVersion& version) const

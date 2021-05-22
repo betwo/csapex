@@ -11,7 +11,7 @@
 #include <csapex/msg/direct_connection.h>
 #include <csapex/utility/uuid_provider.h>
 #include <csapex/utility/exceptions.h>
-#include <csapex/model/multi_connection_type.h>
+#include <csapex/model/multi_token_data.h>
 
 #include <csapex_testing/csapex_test_case.h>
 #include <csapex_testing/mockup_msgs.h>
@@ -57,8 +57,8 @@ TEST_F(ConnectionTest, DirectConnectionCompatibility)
     // non typed should always be connectable!
     ASSERT_TRUE(Connection::isCompatibleWith(&o, &i));
 
-    o.setType(makeEmpty<GenericValueMessage<int>>());
-    i.setType(makeEmpty<GenericValueMessage<int>>());
+    o.setType(connection_types::makeTokenType<GenericValueMessage<int>>());
+    i.setType(connection_types::makeTokenType<GenericValueMessage<int>>());
     ASSERT_TRUE(Connection::isCompatibleWith(&o, &i));
 }
 

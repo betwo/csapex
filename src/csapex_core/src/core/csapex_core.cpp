@@ -254,10 +254,12 @@ void CsApexCore::init()
         root_->notification.connect(notification);
 
         if (is_root_) {
-            root_->getSubgraphNode()->createInternalSlot(makeEmpty<connection_types::AnyMessage>(), root_->getLocalGraph()->makeUUID("slot_save"), "save",
+            root_->getSubgraphNode()->createInternalSlot(connection_types::makeTokenType<connection_types::AnyMessage>(), root_->getLocalGraph()->makeUUID("slot_save"), "save",
                                                          [this](const TokenPtr&) { saveAs(getSettings().get<std::string>("config")); });
-            root_->getSubgraphNode()->createInternalSlot(makeEmpty<connection_types::AnyMessage>(), root_->getLocalGraph()->makeUUID("slot_exit"), "exit", [this](const TokenPtr&) { shutdown(); });
-            root_->getSubgraphNode()->createInternalSlot(makeEmpty<connection_types::AnyMessage>(), root_->getLocalGraph()->makeUUID("slot_abort"), "abort", [this](const TokenPtr&) { abort(); });
+            root_->getSubgraphNode()->createInternalSlot(connection_types::makeTokenType<connection_types::AnyMessage>(), root_->getLocalGraph()->makeUUID("slot_exit"), "exit",
+                                                         [this](const TokenPtr&) { shutdown(); });
+            root_->getSubgraphNode()->createInternalSlot(connection_types::makeTokenType<connection_types::AnyMessage>(), root_->getLocalGraph()->makeUUID("slot_abort"), "abort",
+                                                         [this](const TokenPtr&) { abort(); });
         }
 
         if (is_root_) {

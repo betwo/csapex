@@ -33,29 +33,46 @@ MessageFactory::MessageFactory()
 
 MessageFactory::~MessageFactory()
 {
-    type_to_constructor.clear();
-    type_to_type_index.clear();
+    typename_to_message_constructor.clear();
+    typename_to_token_type_constructor.clear();
+    typename_to_type_index.clear();
 }
 
 void MessageFactory::shutdown()
 {
-    type_to_constructor.clear();
-    type_to_type_index.clear();
+    typename_to_message_constructor.clear();
+    typename_to_token_type_constructor.clear();
+    typename_to_type_index.clear();
 }
 
 TokenData::Ptr MessageFactory::createMessage(const std::string& type)
 {
     MessageFactory& i = instance();
 
-    if (i.type_to_constructor.empty()) {
+    if (i.typename_to_message_constructor.empty()) {
         throw std::runtime_error("MessageFactory: no connection types registered!");
     }
 
-    if (i.type_to_constructor.find(type) == i.type_to_constructor.end()) {
+    if (i.typename_to_message_constructor.find(type) == i.typename_to_message_constructor.end()) {
         throw std::runtime_error(std::string("cannot create message, no such type (") + type + ")");
     }
 
-    return i.type_to_constructor[type]();
+    return i.typename_to_message_constructor[type]();
+}
+
+TokenType::Ptr MessageFactory::createMessageType(const std::string& type)
+{
+    MessageFactory& i = instance();
+
+    if (i.typename_to_token_type_constructor.empty()) {
+        throw std::runtime_error("MessageFactory: no connection types registered!");
+    }
+
+    if (i.typename_to_token_type_constructor.find(type) == i.typename_to_token_type_constructor.end()) {
+        throw std::runtime_error(std::string("cannot create message, no such type (") + type + ")");
+    }
+
+    return i.typename_to_token_type_constructor[type]();
 }
 
 TokenData::Ptr MessageFactory::readFile(const std::string& file)
@@ -183,20 +200,22 @@ void MessageFactory::writeBinaryFile(const std::string& path, const TokenData& m
 
 bool MessageFactory::isMessageRegistered(const std::string& type) const
 {
-    std::map<std::string, Constructor>::const_iterator it = type_to_constructor.find(type);
-    return it != type_to_constructor.end();
+    std::map<std::string, MessageConstructor>::const_iterator it = typename_to_message_constructor.find(type);
+    return it != typename_to_message_constructor.end();
 }
 
-void MessageFactory::registerMessage(std::string type, std::type_index typeindex, Constructor constructor)
+void MessageFactory::registerMessage(std::string type, std::type_index typeindex, MessageConstructor msg_constructor, TokenTypeConstructor type_constructor)
 {
     MessageFactory& i = instance();
 
-    std::map<std::string, Constructor>::const_iterator it = i.type_to_constructor.find(type);
+    std::map<std::string, MessageConstructor>::const_iterator it = i.typename_to_message_constructor.find(type);
 
-    apex_assert_hard_msg(it == i.type_to_constructor.end() || i.type_to_type_index.at(type) == typeindex, std::string("there are two or more messages of type '") + type + "' registered");
+    apex_assert_hard_msg(it == i.typename_to_message_constructor.end() || i.typename_to_type_index.at(type) == typeindex,
+                         std::string("there are two or more messages of type '") + type + "' registered");
 
-    i.type_to_constructor.insert(std::make_pair(type, constructor));
-    i.type_to_type_index.insert(std::make_pair(type, typeindex));
+    i.typename_to_message_constructor.insert(std::make_pair(type, msg_constructor));
+    i.typename_to_token_type_constructor.insert(std::make_pair(type, type_constructor));
+    i.typename_to_type_index.insert(std::make_pair(type, typeindex));
 }
 
 void MessageFactory::deregisterMessage(std::string type)
@@ -204,15 +223,21 @@ void MessageFactory::deregisterMessage(std::string type)
     MessageFactory& i = instance();
 
     {
-        auto it = i.type_to_constructor.find(type);
-        if (it != i.type_to_constructor.end()) {
-            i.type_to_constructor.erase(it);
+        auto it = i.typename_to_message_constructor.find(type);
+        if (it != i.typename_to_message_constructor.end()) {
+            i.typename_to_message_constructor.erase(it);
         }
     }
     {
-        auto it = i.type_to_type_index.find(type);
-        if (it != i.type_to_type_index.end()) {
-            i.type_to_type_index.erase(it);
+        auto it = i.typename_to_token_type_constructor.find(type);
+        if (it != i.typename_to_token_type_constructor.end()) {
+            i.typename_to_token_type_constructor.erase(it);
+        }
+    }
+    {
+        auto it = i.typename_to_type_index.find(type);
+        if (it != i.typename_to_type_index.end()) {
+            i.typename_to_type_index.erase(it);
         }
     }
 }

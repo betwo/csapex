@@ -21,7 +21,7 @@ using namespace csapex;
 VariadicBase::VariadicBase(TokenTypeConstPtr type) : variadic_type_(type), variadic_modifier_(nullptr)
 {
 }
-VariadicBase::VariadicBase() : VariadicBase(makeEmpty<connection_types::AnyMessage>())
+VariadicBase::VariadicBase() : VariadicBase(connection_types::makeTokenType<connection_types::AnyMessage>())
 {
 }
 
@@ -46,7 +46,7 @@ void VariadicBase::portCountChanged()
 VariadicInputs::VariadicInputs(TokenTypeConstPtr type) : VariadicBase(type)
 {
 }
-VariadicInputs::VariadicInputs() : VariadicInputs(makeEmpty<connection_types::AnyMessage>())
+VariadicInputs::VariadicInputs() : VariadicInputs(connection_types::makeTokenType<connection_types::AnyMessage>())
 {
 }
 
@@ -167,7 +167,7 @@ void VariadicInputs::updateInputs(int count)
 VariadicOutputs::VariadicOutputs(TokenTypeConstPtr type) : VariadicBase(type)
 {
 }
-VariadicOutputs::VariadicOutputs() : VariadicBase(makeEmpty<connection_types::AnyMessage>())
+VariadicOutputs::VariadicOutputs() : VariadicBase(connection_types::makeTokenType<connection_types::AnyMessage>())
 {
 }
 
@@ -288,7 +288,7 @@ void VariadicOutputs::updateOutputs(int count)
 VariadicEvents::VariadicEvents(TokenTypeConstPtr type) : VariadicBase(type)
 {
 }
-VariadicEvents::VariadicEvents() : VariadicBase(makeEmpty<connection_types::AnyMessage>())
+VariadicEvents::VariadicEvents() : VariadicBase(connection_types::makeTokenType<connection_types::AnyMessage>())
 {
 }
 
@@ -394,7 +394,7 @@ void VariadicEvents::updateEvents(int count)
             } else {
                 label = "Event";
             }
-            createVariadicEvent(makeEmpty<connection_types::AnyMessage>(), label);
+            createVariadicEvent(connection_types::makeTokenType<connection_types::AnyMessage>(), label);
         }
     }
 
@@ -408,7 +408,7 @@ void VariadicEvents::updateEvents(int count)
 VariadicSlots::VariadicSlots(TokenTypeConstPtr type) : VariadicBase(type)
 {
 }
-VariadicSlots::VariadicSlots() : VariadicBase(makeEmpty<connection_types::AnyMessage>())
+VariadicSlots::VariadicSlots() : VariadicBase(connection_types::makeTokenType<connection_types::AnyMessage>())
 {
 }
 
@@ -530,7 +530,7 @@ void VariadicSlots::updateSlots(int count)
             } else {
                 label = "Slot";
             }
-            createVariadicSlot(makeEmpty<connection_types::AnyMessage>(), label, [](const TokenPtr&) {});
+            createVariadicSlot(connection_types::makeTokenType<connection_types::AnyMessage>(), label, [](const TokenPtr&) {});
         }
     }
 
@@ -544,7 +544,7 @@ void VariadicSlots::updateSlots(int count)
 VariadicIO::VariadicIO(TokenTypeConstPtr type) : VariadicBase(type), VariadicInputs(type), VariadicOutputs(type)
 {
 }
-VariadicIO::VariadicIO() : VariadicBase(makeEmpty<connection_types::AnyMessage>())
+VariadicIO::VariadicIO() : VariadicBase(connection_types::makeTokenType<connection_types::AnyMessage>())
 {
 }
 
@@ -574,7 +574,7 @@ void VariadicIO::setupVariadicParameters(Parameterizable& parameters)
 Variadic::Variadic(TokenTypeConstPtr type) : VariadicBase(type), VariadicInputs(type), VariadicOutputs(type), VariadicEvents(type), VariadicSlots(type)
 {
 }
-Variadic::Variadic() : VariadicBase(makeEmpty<connection_types::AnyMessage>())
+Variadic::Variadic() : VariadicBase(connection_types::makeTokenType<connection_types::AnyMessage>())
 {
 }
 

@@ -17,12 +17,7 @@ TokenData::TokenData()
 {
 }
 
-TokenData::TokenData(const std::string& type_name) : TokenType(type_name)
-{
-    setDescriptiveName(type_name);
-}
-
-TokenData::TokenData(const std::string& type_name, const std::string& descriptive_name) : TokenType(type_name, descriptive_name)
+TokenData::TokenData(TokenTypePtr type) : type_(type)
 {
 }
 
@@ -30,14 +25,24 @@ TokenData::~TokenData()
 {
 }
 
-std::shared_ptr<TokenType> TokenData::toType() const
+std::shared_ptr<TokenType> TokenData::getType() const
 {
-    return cloneAs<TokenType>();
+    return type_;
 }
 
 bool TokenData::isValid() const
 {
     return true;
+}
+
+std::string TokenData::typeName() const
+{
+    return type_->typeName();
+}
+
+std::string TokenData::descriptiveName() const
+{
+    return type_->descriptiveName();
 }
 
 TokenData::ConstPtr TokenData::nestedValue(std::size_t index) const
@@ -55,7 +60,7 @@ void TokenData::addNestedValue(const ConstPtr& msg)
 
 void TokenData::writeNative(const std::string& /*file*/, const std::string& /*base*/, const std::string& /*suffix*/) const
 {
-    std::cerr << "error: writeRaw not implemented for message type " << descriptiveName() << std::endl;
+    std::cerr << "error: writeRaw not implemented for message type " << type_->descriptiveName() << std::endl;
 }
 
 uint8_t TokenData::getPacketType() const

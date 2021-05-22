@@ -35,23 +35,23 @@ void factory::deregisterParameterType(const std::string& type)
 
 void factory::ParameterFactory::registerParameterType(const std::string& type, std::function<ParameterBuilder()> constructor)
 {
-    type_to_constructor.insert(std::make_pair(type, constructor));
+    typename_to_message_constructor.insert(std::make_pair(type, constructor));
 }
 void factory::ParameterFactory::deregisterParameterType(const std::string& type)
 {
-    auto pos = type_to_constructor.find(type);
-    if (pos != type_to_constructor.end()) {
-        type_to_constructor.erase(pos);
+    auto pos = typename_to_message_constructor.find(type);
+    if (pos != typename_to_message_constructor.end()) {
+        typename_to_message_constructor.erase(pos);
     }
 }
 
 ParameterBuilder factory::ParameterFactory::makeEmpty(const std::string& type)
 {
-    if (type_to_constructor.find(type) == type_to_constructor.end()) {
+    if (typename_to_message_constructor.find(type) == typename_to_message_constructor.end()) {
         throw std::runtime_error(std::string("cannot create parameter, no such type (") + type + ")");
     }
 
-    return type_to_constructor[type]();
+    return typename_to_message_constructor[type]();
 }
 
 ParameterBuilder factory::makeEmpty(const std::string& type)

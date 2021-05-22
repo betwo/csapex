@@ -343,7 +343,8 @@ add_library(${PROJECT_NAME} SHARED
     src/model/graph_facade_impl.cpp
     src/model/notification.cpp
     src/model/notifier.cpp
-    src/model/multi_connection_type.cpp
+    src/model/multi_token_data.cpp
+    src/model/multi_token_type.cpp
     src/model/node_constructor.cpp
     src/model/node.cpp
     src/model/node_modifier.cpp

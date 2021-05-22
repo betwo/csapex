@@ -20,6 +20,50 @@ namespace connection_types
 template <typename T>
 struct type;
 
+namespace detail
+{
+template <typename T, typename = void>
+struct TokenTypeConstructor
+{
+    static TokenTypePtr makeTokenType()
+    {
+        typedef typename std::remove_const<T>::type TT;
+        return std::make_shared<TokenType>(
+            // name
+            type2name(typeid(TT)),
+            // description
+            type<TT>::name());
+    }
+};
+
+template <typename T>
+struct TokenTypeConstructor<T, std::void_t<decltype(type<T>::makeTokenType())>>
+{
+    static TokenTypePtr makeTokenType()
+    {
+        typedef typename std::remove_const<T>::type TT;
+        return type<TT>::makeTokenType();
+    }
+};
+
+}  // namespace detail
+
+template <typename T>
+TokenTypePtr makeTokenType()
+{
+    return detail::TokenTypeConstructor<T>::makeTokenType();
+}
+
+// inline TokenTypePtr makeTokenType(const std::string& type_name)
+// {
+//     return std::make_shared<TokenType>(type_name);
+// }
+
+// inline TokenTypePtr makeTokenType(const std::string& type_name, const std::string& descriptive_name)
+// {
+//     return std::make_shared<TokenType>(type_name, descriptive_name);
+// }
+
 template <typename T>
 inline std::string serializationName()
 {
