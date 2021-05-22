@@ -324,7 +324,10 @@ struct SimplifyMemFunc<SINGLE_MEMFUNCPTR_SIZE>
         // static_cast through an int, but the DOS compiler doesn't.
         bound_func = horrible_cast<GenericMemFuncType>(function_to_bind);
 #else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
         bound_func = reinterpret_cast<GenericMemFuncType>(function_to_bind);
+#pragma GCC diagnostic pop
 #endif
         return reinterpret_cast<GenericClass*>(pthis);
     }
@@ -749,7 +752,10 @@ public:
     }
     inline GenericMemFunc GetClosureMemPtr() const
     {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
         return reinterpret_cast<GenericMemFunc>(m_pFunction);
+#pragma GCC diagnostic pop
     }
 
     // There are a few ways of dealing with static function pointers.

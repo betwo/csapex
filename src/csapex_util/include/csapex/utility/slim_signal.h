@@ -76,6 +76,8 @@ public:
     Connection(const Connection& c);
     Connection();
 
+    Connection& operator=(const Connection& copy);
+
     virtual ~Connection();
 
     SignalBase* getParent() const;

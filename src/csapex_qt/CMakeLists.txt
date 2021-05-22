@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 3.8.2)
 
 project(csapex_qt CXX)
 
+## Enforce that we use C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include (GenerateExportHeader)
 
 find_package(catkin REQUIRED COMPONENTS csapex_core csapex_remote)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL REQUIRED)
-
-find_package(OpenGL REQUIRED)
 
 # make sure the devel include exists, there we will generate the export headers
 file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/include)
@@ -37,16 +39,6 @@ qt5_wrap_ui(QT_UI
 
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/external)
-
-
-include_directories(
-    include
-    external/qxt5/include
-    ${OPENGL_INCLUDE_DIR}
-    ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS}
-    ${catkin_INCLUDE_DIRS}
-)
-
 
 #
 # BUILD THE LIBRARIES
@@ -167,6 +159,20 @@ generate_export_header( ${PROJECT_NAME}
              EXPORT_FILE_NAME ${PROJECT_NAME}/export.h
              STATIC_DEFINE ${PROJECT_NAME}_BUILT_AS_STATIC
 )
+
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    include
+)
+
+target_include_directories(${PROJECT_NAME}
+  SYSTEM PUBLIC
+    external/qxt5/include
+    ${OPENGL_INCLUDE_DIR}
+    ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS}
+    ${catkin_INCLUDE_DIRS}
+)
+
 target_link_libraries(${PROJECT_NAME}
     ${catkin_LIBRARIES}
 

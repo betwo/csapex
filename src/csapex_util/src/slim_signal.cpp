@@ -101,6 +101,18 @@ Connection::Connection(const Connection& other) : parent_(other.parent_), delete
     }
 }
 
+Connection& Connection::operator=(const Connection& other)
+{
+    parent_ = other.parent_;
+    deleter_ = other.deleter_;
+    child_ = other.child_;
+    if (parent_) {
+        apex_assert_hard(parent_->guard_ == -1);
+        parent_->addConnection(this);
+    }
+    return *this;
+}
+
 Connection::Connection() : parent_(nullptr), child_(nullptr)
 {
 }

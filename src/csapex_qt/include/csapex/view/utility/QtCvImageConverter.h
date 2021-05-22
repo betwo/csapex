@@ -2,7 +2,7 @@
 #define IMAGE_CONVERTER_H
 
 /// SYSTEM
-#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
 #include <stdexcept>
 #include <QImage>

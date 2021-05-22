@@ -60,11 +60,6 @@ endif()
 ## Build ##
 ###########
 
-include_directories(
-    ${catkin_INCLUDE_DIRS}
-)
-
-
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 #
@@ -82,6 +77,10 @@ else()
                 src/csapex.cpp)
 endif()
 
+target_include_directories(csapex_main
+  SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+)
 set_target_properties(csapex_main PROPERTIES
     AUTOMOC TRUE
     COMPILE_FLAGS "-fPIC")
@@ -99,6 +98,11 @@ target_link_libraries(csapex_server
     ${catkin_LIBRARIES}
     Threads::Threads
 )
+target_include_directories(csapex_server
+  SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+)
+
 
 
 
@@ -106,6 +110,10 @@ add_executable(csapex_client
         src/csapex_client.cpp
 
         ${QT_RESOURCES}
+)
+target_include_directories(csapex_client
+  SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
 )
 
 set_target_properties(csapex_client PROPERTIES

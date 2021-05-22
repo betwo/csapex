@@ -1,6 +1,7 @@
 #include <csapex/model/graph_facade.h>
 #include <csapex/msg/generic_value_message.hpp>
 #include <csapex/model/graph/graph_impl.h>
+#include <csapex/model/connector.h>
 #include <csapex/core/graphio.h>
 #include <csapex_testing/mockup_nodes.h>
 #include <csapex_testing/stepping_test.h>

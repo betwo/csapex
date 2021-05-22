@@ -35,7 +35,7 @@ public:
     {
     }
 
-    void setup(csapex::NodeModifier& node_modifier) override
+    void setup(csapex::NodeModifier& node_modifier)
     {
         input_a_ = node_modifier.addInput<int>("input_a");
         input_b_ = node_modifier.addInput<int>("input_b");
@@ -46,7 +46,7 @@ public:
     {
     }
 
-    void process(NodeModifier& node_modifier, Parameterizable& /*parameters*/) override
+    void process(NodeModifier& node_modifier, Parameterizable& /*parameters*/)
     {
         int a = msg::getValue<int>(input_a_);
         int b = msg::getValue<int>(input_b_);
@@ -67,16 +67,16 @@ public:
     {
     }
 
-    void setup(NodeModifier& node_modifier) override
+    void setup(NodeModifier& node_modifier)
     {
         out = node_modifier.addOutput<connection_types::GenericVectorMessage, int>("output");
     }
 
-    void setupParameters(Parameterizable& /*parameters*/) override
+    void setupParameters(Parameterizable& /*parameters*/)
     {
     }
 
-    void process() override
+    void process()
     {
         // TRACEstd::cerr << " < publish " << i << std::endl;
         auto vector = std::make_shared<std::vector<int>>();
@@ -102,16 +102,16 @@ public:
     {
     }
 
-    void setup(NodeModifier& node_modifier) override
+    void setup(NodeModifier& node_modifier)
     {
         out = node_modifier.addOutput<int>("output");
     }
 
-    void setupParameters(Parameterizable& /*parameters*/) override
+    void setupParameters(Parameterizable& /*parameters*/)
     {
     }
 
-    void process() override
+    void process()
     {
         // TRACEstd::cerr << " < publish contant " << i << std::endl;
         msg::publish(out, i);
@@ -141,7 +141,7 @@ public:
     {
     }
 
-    void process(NodeModifier& node_modifier, Parameterizable& /*parameters*/) override
+    void process(NodeModifier& node_modifier, Parameterizable& /*parameters*/)
     {
         auto i = msg::getMessage<connection_types::GenericVectorMessage, int>(in);
         value = *i;
